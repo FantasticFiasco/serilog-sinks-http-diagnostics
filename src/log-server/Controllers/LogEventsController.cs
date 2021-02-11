@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace LogServer.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("")]
     public class LogEventsController : ControllerBase
     {
         private readonly ILogger<LogEventsController> logger;
