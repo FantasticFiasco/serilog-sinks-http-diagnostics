@@ -19,7 +19,12 @@ namespace LogServer.Controllers
         [HttpPost]
         public void Post([FromBody] LogEvents body)
         {
-            logger.LogInformation("Received batch of log events");
+            logger.LogInformation($"Received batch of {body.Events.Length} log events");
+
+            foreach (var logEvent in body.Events)
+            {
+                logger.LogInformation(logEvent.RenderedMessage);
+            }
         }
     }
 
