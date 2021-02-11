@@ -1,5 +1,10 @@
 {
-    "cSpell.words": [
-        "Serilog"
-    ]
+  "cSpell.words": ["Serilog"],
+  "editor.formatOnSave": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/bin": true,
+    "**/obj": true
+  }
 }
