@@ -1,6 +1,6 @@
 using System;
 
-namespace log_server
+namespace LogServer
 {
     public class WeatherForecast
     {

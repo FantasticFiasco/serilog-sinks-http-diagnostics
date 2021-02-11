@@ -12,7 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
-namespace log_server
+namespace LogServer
 {
     public class Startup
     {
@@ -30,7 +30,7 @@ namespace log_server
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "log_server", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "LogServer", Version = "v1" });
             });
         }
 
@@ -41,7 +41,7 @@ namespace log_server
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "log_server v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LogServer v1"));
             }
 
             app.UseHttpsRedirection();

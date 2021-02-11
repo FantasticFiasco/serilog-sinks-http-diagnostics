@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "log_server": {
+    "LogServer": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
