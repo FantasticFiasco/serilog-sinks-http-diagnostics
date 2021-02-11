@@ -30,8 +30,7 @@ namespace LogServer.Controllers
 
     public class LogEvent
     {
-        //public DateTime Timestamp { get; set; }
-        public string Timestamp { get; set; }
+        public DateTime Timestamp { get; set; }
 
         public string Level { get; set; }
 
