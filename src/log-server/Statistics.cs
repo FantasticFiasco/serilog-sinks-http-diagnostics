@@ -7,6 +7,16 @@ namespace LogServer
 {
     public class Statistics
     {
+        //           x < 1 kB
+        // 1 kB   <= x < 5 kB
+        // 5 kB   <= x < 10  kB
+        // 10 kB  <= x < 50  kB
+        // 50 kB  <= x < 100 kB
+        // 100 kB <= x < 500 kB
+        // 500 kB <= x < 1 MB
+        // 1 MB   <= x < 5 MB
+        // 5 MB   <= x
+
         private readonly ConcurrentDictionary<int, int> data;
         private long batchCount;
         private long eventCount;

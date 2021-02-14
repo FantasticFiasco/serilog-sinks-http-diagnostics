@@ -24,10 +24,5 @@ namespace LogServer.Controllers
 
             statistics.AddBatch(logEvents.Select(logEvent => logEvent.Payload).ToArray());
         }
-
-        public class LogEvent
-        {
-            public string Payload { get; set; }
-        }
     }
 }
