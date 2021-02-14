@@ -27,14 +27,11 @@ namespace LogServer
         {
             get
             {
-                var start = Start;
+                var duration = Duration();
 
-                if (start == null)
-                {
-                    return null;
-                }
-
-                return (double)Interlocked.Read(ref batchCount) / DateTime.Now.Subtract((DateTime)start).TotalSeconds;
+                return duration != null
+                    ? (double)Interlocked.Read(ref batchCount) / ((TimeSpan)duration).TotalSeconds
+                    : null;
             }
         }
 
@@ -47,35 +44,38 @@ namespace LogServer
         {
             get
             {
-                var start = Start;
+                var duration = Duration();
 
-                if (start == null)
-                {
-                    return null;
-                }
-
-                return (double)Interlocked.Read(ref eventCount) / DateTime.Now.Subtract((DateTime)start).TotalSeconds;
+                return duration != null
+                    ? (double)Interlocked.Read(ref eventCount) / ((TimeSpan)duration).TotalSeconds
+                    : null;
             }
         }
 
         public void AddBatch(string[] logEvents)
         {
-            var now = DateTime.Now;
-
             if (Start == null)
             {
-                Start = now;
+                Start = DateTime.Now;
             }
 
-            var currentBatchCount = Interlocked.Increment(ref batchCount);
-
-            var currentEventCount = Interlocked.Add(ref eventCount, logEvents.Length);
+            Interlocked.Increment(ref batchCount);
+            Interlocked.Add(ref eventCount, logEvents.Length);
 
             foreach (var logEvent in logEvents)
             {
                 var size = UTF8Encoding.UTF8.GetByteCount(logEvent);
                 data.AddOrUpdate(size, 1, (key, oldValue) => oldValue + 1);
             }
+        }
+
+        private TimeSpan? Duration()
+        {
+            var start = Start;
+
+            return start != null
+                ? DateTime.Now.Subtract((DateTime)start)
+                : null;
         }
     }
 }

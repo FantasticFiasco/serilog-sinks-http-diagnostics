@@ -38,15 +38,21 @@ namespace LogServer
 
         private void OnTick(object state)
         {
+            if (statistics.Start == null)
+            {
+                logger.LogInformation("Waiting for log events...");
+                return;
+            }
+
             var now = DateTime.Now;
 
             var messageBuilder = new StringBuilder();
-            messageBuilder.AppendFormat("Start:      {0:O}{1}", statistics.Start, Environment.NewLine);
-            messageBuilder.AppendFormat("Duration:   {0}{1}", statistics.Start != null ? now.Subtract((DateTime)statistics.Start) : "", Environment.NewLine);
-            messageBuilder.AppendFormat("Batches:    {0}{1}", statistics.BatchCount, Environment.NewLine);
-            messageBuilder.AppendFormat("  /minute:  {0:N2}{1}", statistics.BatchesPerMinute, Environment.NewLine);
-            messageBuilder.AppendFormat("Events:     {0}{1}", statistics.EventCount, Environment.NewLine);
-            messageBuilder.AppendFormat("  /minute:  {0:N2}{1}", statistics.EventsPerMinute, Environment.NewLine);
+            messageBuilder.AppendFormat("Start:        {0:O}{1}", statistics.Start, Environment.NewLine);
+            messageBuilder.AppendFormat("Duration:     {0}{1}", statistics.Start != null ? now.Subtract((DateTime)statistics.Start) : "", Environment.NewLine);
+            messageBuilder.AppendFormat("Batches:      {0}{1}", statistics.BatchCount, Environment.NewLine);
+            messageBuilder.AppendFormat("    /minute:  {0:N2}{1}", statistics.BatchesPerMinute, Environment.NewLine);
+            messageBuilder.AppendFormat("Events:       {0}{1}", statistics.EventCount, Environment.NewLine);
+            messageBuilder.AppendFormat("    /minute:  {0:N2}{1}", statistics.EventsPerMinute, Environment.NewLine);
 
             logger.LogInformation(messageBuilder.ToString());
         }
