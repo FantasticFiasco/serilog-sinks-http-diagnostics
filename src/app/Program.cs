@@ -1,6 +1,7 @@
 ﻿using System;
 using CommandLine;
 using Serilog;
+using Serilog.Sinks.Http.BatchFormatters;
 
 namespace App
 {
@@ -16,7 +17,10 @@ namespace App
         {
             ILogger log = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
-                .WriteTo.Http(requestUri: options.Destination)
+                .WriteTo.Http(
+                    requestUri: options.Destination,
+                    textFormatter: new LogEventFormatter(),
+                    batchFormatter: new ArrayBatchFormatter())
                 .CreateLogger();
 
             for (var i = 0; i < options.Numbers; i++)
