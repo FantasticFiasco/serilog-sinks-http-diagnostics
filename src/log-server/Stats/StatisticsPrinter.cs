@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace LogServer
+namespace LogServer.Stats
 {
     public class StatisticsPrinter : BackgroundService
     {

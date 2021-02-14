@@ -3,27 +3,17 @@ using System.Collections.Concurrent;
 using System.Text;
 using System.Threading;
 
-namespace LogServer
+namespace LogServer.Stats
 {
     public class Statistics
     {
-        //           x < 1 kB
-        // 1 kB   <= x < 5 kB
-        // 5 kB   <= x < 10  kB
-        // 10 kB  <= x < 50  kB
-        // 50 kB  <= x < 100 kB
-        // 100 kB <= x < 500 kB
-        // 500 kB <= x < 1 MB
-        // 1 MB   <= x < 5 MB
-        // 5 MB   <= x
-
-        private readonly ConcurrentDictionary<int, int> data;
+        private readonly ConcurrentDictionary<Bucket, int> distribution;
         private long batchCount;
         private long eventCount;
 
         public Statistics()
         {
-            data = new ConcurrentDictionary<int, int>();
+            distribution = new ConcurrentDictionary<Bucket, int>();
         }
 
         public DateTime? Start { get; set; }
@@ -74,8 +64,8 @@ namespace LogServer
 
             foreach (var logEvent in logEvents)
             {
-                var size = UTF8Encoding.UTF8.GetByteCount(logEvent);
-                data.AddOrUpdate(size, 1, (key, oldValue) => oldValue + 1);
+                var bucket = BelongsTo(logEvent);
+                distribution.AddOrUpdate(bucket, 1, (key, oldValue) => oldValue + 1);
             }
         }
 
@@ -86,6 +76,22 @@ namespace LogServer
             return start != null
                 ? DateTime.Now.Subtract((DateTime)start)
                 : null;
+        }
+
+        private static Bucket BelongsTo(string logEvent)
+        {
+            var size = ByteSize.From(logEvent);
+
+            if (size < 1 * ByteSize.KB) return Bucket.Below1KB;
+            if (size < 5 * ByteSize.KB) return Bucket.Between1And5KB;
+            if (size < 10 * ByteSize.KB) return Bucket.Between5And10KB;
+            if (size < 50 * ByteSize.KB) return Bucket.Between10And50KB;
+            if (size < 100 * ByteSize.KB) return Bucket.Between50And100KB;
+            if (size < 500 * ByteSize.KB) return Bucket.Between100And500KB;
+            if (size < 1 * ByteSize.MB) return Bucket.Between500KBAnd1MB;
+            if (size < 5 * ByteSize.MB) return Bucket.Between1And5MB;
+
+            return Bucket.Above5MB;
         }
     }
 }
