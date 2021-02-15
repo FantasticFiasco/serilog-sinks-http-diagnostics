@@ -26,7 +26,7 @@ namespace App.Report
 
         private void OnTick(object? state)
         {
-            Console.WriteLine("TODO: Implement!");
+            Log.Info($"Number of written events: {statistics.LogEventCount}");
         }
     }
 }

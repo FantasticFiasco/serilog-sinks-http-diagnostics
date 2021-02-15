@@ -56,7 +56,7 @@ namespace App
                 message = $"{message.Substring(0, 200)}...";
             }
 
-            Console.Error.WriteLine(message);
+            Log.Error($"[DIAGNOSTICS] {message}");
         }
 
         private Task[] StartTasks()
@@ -69,7 +69,7 @@ namespace App
 
         private async Task StartTask(int id)
         {
-            Console.WriteLine($"Starting up task {id}...");
+            Log.Info($"Starting up task {id}...");
 
             var sleep = 1000 / options.Rate;
 
