@@ -57,16 +57,16 @@ namespace LogServer.Stats
 
             var distributionRows = new[]
             {
-                new DistributionRow("             size < 512B  {0,9} |{1}", statistics.EventsOfSize(LogEventSize.Below512B)),
-                new DistributionRow("    512B  <= size < 1KB   {0,9} |{1}", statistics.EventsOfSize(LogEventSize.Between512BAnd1KB)),
-                new DistributionRow("    1KB   <= size < 5KB   {0,9} |{1}", statistics.EventsOfSize(LogEventSize.Between1And5KB)),
-                new DistributionRow("    5KB   <= size < 10KB  {0,9} |{1}", statistics.EventsOfSize(LogEventSize.Between5And10KB)),
-                new DistributionRow("    10KB  <= size < 50KB  {0,9} |{1}", statistics.EventsOfSize(LogEventSize.Between10And50KB)),
-                new DistributionRow("    50KB  <= size < 100KB {0,9} |{1}", statistics.EventsOfSize(LogEventSize.Between50And100KB)),
-                new DistributionRow("    100KB <= size < 512KB {0,9} |{1}", statistics.EventsOfSize(LogEventSize.Between100And512KB)),
-                new DistributionRow("    512KB <= size < 1MB   {0,9} |{1}", statistics.EventsOfSize(LogEventSize.Between512KBAnd1MB)),
-                new DistributionRow("    1MB   <= size < 5MB   {0,9} |{1}", statistics.EventsOfSize(LogEventSize.Between1And5MB)),
-                new DistributionRow("    5MB   <= size         {0,9} |{1}", statistics.EventsOfSize(LogEventSize.Above5MB)),
+                new DistributionRow("             size < 512B  {0,9} |{1}", statistics.NbrOfEvents(LogEventSize.Below512B)),
+                new DistributionRow("    512B  <= size < 1KB   {0,9} |{1}", statistics.NbrOfEvents(LogEventSize.Between512BAnd1KB)),
+                new DistributionRow("    1KB   <= size < 5KB   {0,9} |{1}", statistics.NbrOfEvents(LogEventSize.Between1And5KB)),
+                new DistributionRow("    5KB   <= size < 10KB  {0,9} |{1}", statistics.NbrOfEvents(LogEventSize.Between5And10KB)),
+                new DistributionRow("    10KB  <= size < 50KB  {0,9} |{1}", statistics.NbrOfEvents(LogEventSize.Between10And50KB)),
+                new DistributionRow("    50KB  <= size < 100KB {0,9} |{1}", statistics.NbrOfEvents(LogEventSize.Between50And100KB)),
+                new DistributionRow("    100KB <= size < 512KB {0,9} |{1}", statistics.NbrOfEvents(LogEventSize.Between100And512KB)),
+                new DistributionRow("    512KB <= size < 1MB   {0,9} |{1}", statistics.NbrOfEvents(LogEventSize.Between512KBAnd1MB)),
+                new DistributionRow("    1MB   <= size < 5MB   {0,9} |{1}", statistics.NbrOfEvents(LogEventSize.Between1And5MB)),
+                new DistributionRow("    5MB   <= size         {0,9} |{1}", statistics.NbrOfEvents(LogEventSize.Above5MB)),
             };
 
             var total = distributionRows

@@ -69,7 +69,7 @@ namespace LogServer.Stats
             }
         }
 
-        public int EventsOfSize(LogEventSize size)
+        public int NbrOfEvents(LogEventSize size)
         {
             bool success = distribution.TryGetValue(size, out int count);
             return success ? count : 0;
