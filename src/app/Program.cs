@@ -27,7 +27,7 @@ namespace App
 
             for (var i = 0; i < options.Numbers; i++)
             {
-                log.Information(new string('*', 1024));
+                log.Information("Logging from app");
             }
 
             Console.WriteLine("Press any key to continue...");
