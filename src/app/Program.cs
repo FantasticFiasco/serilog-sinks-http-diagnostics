@@ -40,6 +40,11 @@ namespace App
 
         private async Task RunAsync()
         {
+            var statistics = new Statistics();
+
+            var printer = new Printer(statistics);
+            printer.Start();
+
             var tasks = StartTasks();
             await Task.WhenAll(tasks);
         }

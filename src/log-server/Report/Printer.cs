@@ -23,11 +23,7 @@ namespace LogServer.Report
 
         public override void Dispose()
         {
-            if (timer != null)
-            {
-                timer.Dispose();
-            }
-
+            timer?.Dispose();
             base.Dispose();
         }
 
