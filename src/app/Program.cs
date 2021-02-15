@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using App.Report;
 using CommandLine;
 using Serilog;
 using Serilog.Sinks.Http.BatchFormatters;
@@ -29,6 +30,7 @@ namespace App
 
             logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
+                .WriteTo.Sink<Statistics>()
                 .WriteTo.Http(
                     requestUri: options.Destination,
                     textFormatter: new LogEventFormatter(),

@@ -52,8 +52,8 @@ namespace LogServer.Report
             messageBuilder.AppendLine("Duration:     {0}".Format(statistics.Start != null ? now.Subtract((DateTime)statistics.Start) : ""));
             messageBuilder.AppendLine("Batches:      {0}".Format(statistics.BatchCount));
             messageBuilder.AppendLine("    /minute:  {0:N2}".Format(statistics.BatchesPerMinute));
-            messageBuilder.AppendLine("Events:       {0}".Format(statistics.EventCount));
-            messageBuilder.AppendLine("    /minute:  {0:N2}".Format(statistics.EventsPerMinute));
+            messageBuilder.AppendLine("Events:       {0}".Format(statistics.LogEventCount));
+            messageBuilder.AppendLine("    /minute:  {0:N2}".Format(statistics.LogEventsPerMinute));
 
             var rows = new[]
             {

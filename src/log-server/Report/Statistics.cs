@@ -9,7 +9,7 @@ namespace LogServer.Report
     {
         private readonly ConcurrentDictionary<LogEventSize, int> distribution;
         private long batchCount;
-        private long eventCount;
+        private long logEventCount;
 
         public Statistics()
         {
@@ -35,19 +35,19 @@ namespace LogServer.Report
             }
         }
 
-        public long EventCount
+        public long LogEventCount
         {
-            get { return Interlocked.Read(ref eventCount); }
+            get { return Interlocked.Read(ref logEventCount); }
         }
 
-        public double? EventsPerMinute
+        public double? LogEventsPerMinute
         {
             get
             {
                 var duration = Duration();
 
                 return duration != null
-                    ? (double)Interlocked.Read(ref eventCount) / ((TimeSpan)duration).TotalSeconds
+                    ? (double)Interlocked.Read(ref logEventCount) / ((TimeSpan)duration).TotalSeconds
                     : null;
             }
         }
@@ -60,7 +60,7 @@ namespace LogServer.Report
             }
 
             Interlocked.Increment(ref batchCount);
-            Interlocked.Add(ref eventCount, logEvents.Length);
+            Interlocked.Add(ref logEventCount, logEvents.Length);
 
             foreach (var logEvent in logEvents)
             {
