@@ -55,7 +55,7 @@ namespace LogServer.Stats
             messageBuilder.AppendLine("Events:       {0}".Format(statistics.EventCount));
             messageBuilder.AppendLine("    /minute:  {0:N2}".Format(statistics.EventsPerMinute));
 
-            var distributionRows = new[]
+            var rows = new[]
             {
                 new DistributionRow("             size < 512B  {0,9} |{1}", statistics.NbrOfEvents(LogEventSize.Below512B)),
                 new DistributionRow("    512B  <= size < 1KB   {0,9} |{1}", statistics.NbrOfEvents(LogEventSize.Between512BAnd1KB)),
@@ -69,13 +69,13 @@ namespace LogServer.Stats
                 new DistributionRow("    5MB   <= size         {0,9} |{1}", statistics.NbrOfEvents(LogEventSize.Above5MB)),
             };
 
-            var total = distributionRows
+            var total = rows
                 .Select(row => row.NbrOfEvents)
                 .Sum();
 
             messageBuilder.AppendLine("Distribution:");
 
-            foreach (var row in distributionRows)
+            foreach (var row in rows)
             {
                 messageBuilder.AppendLine(row.Template.Format(row.NbrOfEvents, new string('#', 20 * row.NbrOfEvents / total)));
             }
