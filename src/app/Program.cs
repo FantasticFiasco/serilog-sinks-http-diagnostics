@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using CommandLine;
 using Serilog;
 using Serilog.Sinks.Http.BatchFormatters;
@@ -7,34 +9,37 @@ namespace App
 {
     class Program
     {
-        static void Main(string[] args)
+        private readonly Options options;
+        private readonly ILogger logger;
+
+        static async Task Main(string[] args)
         {
-            Parser.Default.ParseArguments<Options>(args)
-               .WithParsed(options => Run(options));
+            await Parser.Default.ParseArguments<Options>(args)
+               .WithParsedAsync(options => new Program(options).RunAsync());
         }
 
-        private static void Run(Options options)
+        private Program(Options options)
         {
+            this.options = options;
+
             Serilog.Debugging.SelfLog.Enable(OnError);
 
-            ILogger log = new LoggerConfiguration()
+            logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
                 .WriteTo.Http(
                     requestUri: options.Destination,
                     textFormatter: new LogEventFormatter(),
                     batchFormatter: new ArrayBatchFormatter(null))
                 .CreateLogger();
-
-            for (var i = 0; i < options.Numbers; i++)
-            {
-                log.Information("Logging from app");
-            }
-
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
         }
 
-        private static void OnError(string message)
+        private async Task RunAsync()
+        {
+            var tasks = StartTasks();
+            await Task.WhenAll(tasks);
+        }
+
+        private void OnError(string message)
         {
             if (message.Length > 200)
             {
@@ -42,6 +47,25 @@ namespace App
             }
 
             Console.Error.WriteLine(message);
+        }
+
+        private Task[] StartTasks()
+        {
+            return Enumerable
+                .Range(0, options.Concurrency)
+                .Select(id => StartTask(id))
+                .ToArray();
+        }
+
+        private async Task StartTask(int id)
+        {
+            var sleep = 1000 / options.Rate;
+
+            while (true)
+            {
+                logger.Information("Logging from app");
+                await Task.Delay(sleep);
+            }
         }
     }
 }
