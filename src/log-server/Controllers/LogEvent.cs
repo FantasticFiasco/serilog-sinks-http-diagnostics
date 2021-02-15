@@ -2,6 +2,6 @@ namespace LogServer.Controllers
 {
     public class LogEvent
     {
-        public string Payload { get; set; }
+        public string Payload { get; set; } = "";
     }
 }

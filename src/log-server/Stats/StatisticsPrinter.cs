@@ -12,7 +12,7 @@ namespace LogServer.Stats
         private readonly Statistics statistics;
         private readonly ILogger<StatisticsPrinter> logger;
 
-        private Timer timer;
+        private Timer? timer;
 
         public StatisticsPrinter(Statistics statistics, ILogger<StatisticsPrinter> logger)
         {
@@ -36,7 +36,7 @@ namespace LogServer.Stats
             return Task.CompletedTask;
         }
 
-        private void OnTick(object state)
+        private void OnTick(object? state)
         {
             if (statistics.Start == null)
             {
