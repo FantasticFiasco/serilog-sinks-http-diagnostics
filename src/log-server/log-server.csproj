@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>LogServer</RootNamespace>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
 </Project>

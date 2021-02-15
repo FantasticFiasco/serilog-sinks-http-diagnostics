@@ -1,44 +1,31 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using LogServer.Stats;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace LogServer.Controllers
 {
+    public record LogEvent(string Payload);
+
     [ApiController]
     [Route("")]
     public class LogEventsController : ControllerBase
     {
+        private readonly Statistics statistics;
         private readonly ILogger<LogEventsController> logger;
 
-        public LogEventsController(ILogger<LogEventsController> logger)
+        public LogEventsController(Statistics statistics, ILogger<LogEventsController> logger)
         {
+            this.statistics = statistics;
             this.logger = logger;
         }
 
         [HttpPost]
-        public void Post([FromBody] LogEvents body)
+        public void Post([FromBody] LogEvent[] logEvents)
         {
-            logger.LogInformation($"Received batch of {body.Events.Length} log events");
+            logger.LogInformation($"Received batch of {logEvents.Length} log events");
 
-            foreach (var logEvent in body.Events)
-            {
-                logger.LogInformation(logEvent.RenderedMessage);
-            }
+            statistics.AddBatch(logEvents.Select(logEvent => logEvent.Payload).ToArray());
         }
-    }
-
-    public class LogEvents
-    {
-        public LogEvent[] Events { get; set; }
-    }
-
-    public class LogEvent
-    {
-        public DateTime Timestamp { get; set; }
-
-        public string Level { get; set; }
-
-        public string RenderedMessage { get; set; }
     }
 }
