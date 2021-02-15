@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Text;
 using System.Threading;
 
-namespace LogServer.Stats
+namespace LogServer.Report
 {
     public class Statistics
     {
@@ -52,7 +52,7 @@ namespace LogServer.Stats
             }
         }
 
-        public void AddBatch(string[] logEvents)
+        public void ReportReceivedBatch(string[] logEvents)
         {
             if (Start == null)
             {

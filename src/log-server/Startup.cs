@@ -1,4 +1,4 @@
-using LogServer.Stats;
+using LogServer.Report;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +19,7 @@ namespace LogServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<Statistics>();
-            services.AddHostedService<StatisticsPrinter>();
+            services.AddHostedService<Printer>();
             services.AddControllers();
         }
 

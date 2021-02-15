@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace LogServer.Stats
+namespace LogServer.Report
 {
-    public class StatisticsPrinter : BackgroundService
+    public class Printer : BackgroundService
     {
         private readonly Statistics statistics;
-        private readonly ILogger<StatisticsPrinter> logger;
+        private readonly ILogger<Printer> logger;
 
         private Timer? timer;
 
-        public StatisticsPrinter(Statistics statistics, ILogger<StatisticsPrinter> logger)
+        public Printer(Statistics statistics, ILogger<Printer> logger)
         {
             this.statistics = statistics;
             this.logger = logger;
