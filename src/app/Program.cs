@@ -29,7 +29,6 @@ namespace App
             Serilog.Debugging.SelfLog.Enable(OnError);
 
             logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
                 .WriteTo.Sink<Statistics>()
                 .WriteTo.Http(
                     requestUri: options.Destination,
