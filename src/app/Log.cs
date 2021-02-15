@@ -6,19 +6,12 @@ namespace App
     {
         public static void Info(string message)
         {
-            AnsiConsole.MarkupLine($"[blue]{Sanitize(message)}[/]");
+            AnsiConsole.MarkupLine("[blue]{0}[/]", message.EscapeMarkup());
         }
 
         public static void Error(string message)
         {
-            AnsiConsole.MarkupLine($"[red bold]{Sanitize(message)}[/]");
-        }
-
-        private static string Sanitize(string message)
-        {
-            return message
-                .Replace("[", "[[")
-                .Replace("]", "]]");
+            AnsiConsole.MarkupLine("[bold red]{0}[/]", message.EscapeMarkup());
         }
     }
 }
