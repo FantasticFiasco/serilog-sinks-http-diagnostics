@@ -77,13 +77,13 @@ namespace LogServer.Stats
 
             foreach (var row in distributionRows)
             {
-                messageBuilder.AppendLine(row.Format.Format(row.NbrOfEvents, new string('#', 20 * row.NbrOfEvents / total)));
+                messageBuilder.AppendLine(row.Template.Format(row.NbrOfEvents, new string('#', 20 * row.NbrOfEvents / total)));
             }
 
             logger.LogInformation(messageBuilder.ToString());
         }
 
-        record DistributionRow(string Format, int NbrOfEvents);
+        record DistributionRow(string Template, int NbrOfEvents);
     }
 }
 
