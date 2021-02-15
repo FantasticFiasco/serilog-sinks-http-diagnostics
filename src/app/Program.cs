@@ -55,13 +55,15 @@ namespace App
         private Task[] StartTasks()
         {
             return Enumerable
-                .Range(0, options.Concurrency)
+                .Range(1, options.Concurrency)
                 .Select(id => StartTask(id))
                 .ToArray();
         }
 
         private async Task StartTask(int id)
         {
+            Console.WriteLine($"Starting up task {id}...");
+
             var sleep = 1000 / options.Rate;
 
             while (true)
