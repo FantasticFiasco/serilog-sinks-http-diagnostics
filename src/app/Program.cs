@@ -10,6 +10,7 @@ namespace App
     class Program
     {
         private readonly Options options;
+        private readonly Random random;
         private readonly ILogger logger;
 
         static async Task Main(string[] args)
@@ -21,6 +22,8 @@ namespace App
         private Program(Options options)
         {
             this.options = options;
+
+            random = new Random();
 
             Serilog.Debugging.SelfLog.Enable(OnError);
 
@@ -63,7 +66,10 @@ namespace App
 
             while (true)
             {
-                logger.Information("Logging from app");
+                var size = (int)(options.MaxSize * random.NextDouble());
+                var message = new string('*', size);
+                logger.Information(message);
+
                 await Task.Delay(sleep);
             }
         }
