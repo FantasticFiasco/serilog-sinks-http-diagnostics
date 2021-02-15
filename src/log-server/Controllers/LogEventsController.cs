@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 
 namespace LogServer.Controllers
 {
+    public record LogEvent(string Payload);
+
     [ApiController]
     [Route("")]
     public class LogEventsController : ControllerBase

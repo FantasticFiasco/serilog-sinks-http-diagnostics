@@ -55,7 +55,6 @@ namespace LogServer.Stats
             messageBuilder.AppendLine("Events:       {0}".Format(statistics.EventCount));
             messageBuilder.AppendLine("    /minute:  {0:N2}".Format(statistics.EventsPerMinute));
 
-
             var distributionRows = new[]
             {
                 new DistributionRow("             size < 512B  {0,9} |{1}", statistics.EventsOfSize(LogEventSize.Below512B)),
@@ -84,16 +83,7 @@ namespace LogServer.Stats
             logger.LogInformation(messageBuilder.ToString());
         }
 
-        class DistributionRow
-        {
-            public DistributionRow(string format, int nbrOfEvents)
-            {
-                Format = format;
-                NbrOfEvents = nbrOfEvents;
-            }
-
-            public string Format { get; }
-            public int NbrOfEvents { get; }
-        }
+        record DistributionRow(string Format, int NbrOfEvents);
     }
 }
+
