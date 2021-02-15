@@ -7,13 +7,13 @@ namespace LogServer.Stats
 {
     public class Statistics
     {
-        private readonly ConcurrentDictionary<Bucket, int> distribution;
+        private readonly ConcurrentDictionary<LogEventSize, int> distribution;
         private long batchCount;
         private long eventCount;
 
         public Statistics()
         {
-            distribution = new ConcurrentDictionary<Bucket, int>();
+            distribution = new ConcurrentDictionary<LogEventSize, int>();
         }
 
         public DateTime? Start { get; set; }
@@ -64,9 +64,15 @@ namespace LogServer.Stats
 
             foreach (var logEvent in logEvents)
             {
-                var bucket = BelongsTo(logEvent);
-                distribution.AddOrUpdate(bucket, 1, (key, oldValue) => oldValue + 1);
+                var size = LogEventSize.From(logEvent);
+                distribution.AddOrUpdate(size, 1, (key, oldValue) => oldValue + 1);
             }
+        }
+
+        public int EventsOfSize(LogEventSize size)
+        {
+            bool success = distribution.TryGetValue(size, out int count);
+            return success ? count : 0;
         }
 
         private TimeSpan? Duration()
@@ -76,22 +82,6 @@ namespace LogServer.Stats
             return start != null
                 ? DateTime.Now.Subtract((DateTime)start)
                 : null;
-        }
-
-        private static Bucket BelongsTo(string logEvent)
-        {
-            var size = ByteSize.From(logEvent);
-
-            if (size < 1 * ByteSize.KB) return Bucket.Below1KB;
-            if (size < 5 * ByteSize.KB) return Bucket.Between1And5KB;
-            if (size < 10 * ByteSize.KB) return Bucket.Between5And10KB;
-            if (size < 50 * ByteSize.KB) return Bucket.Between10And50KB;
-            if (size < 100 * ByteSize.KB) return Bucket.Between50And100KB;
-            if (size < 500 * ByteSize.KB) return Bucket.Between100And500KB;
-            if (size < 1 * ByteSize.MB) return Bucket.Between500KBAnd1MB;
-            if (size < 5 * ByteSize.MB) return Bucket.Between1And5MB;
-
-            return Bucket.Above5MB;
         }
     }
 }
