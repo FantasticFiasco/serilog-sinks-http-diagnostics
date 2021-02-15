@@ -8,6 +8,6 @@ namespace App
         public int Numbers { get; set; }
 
         [Option('d', "destination", Default = "http://localhost:8080", HelpText = "The URL of the log server")]
-        public string Destination { get; set; }
+        public string? Destination { get; set; }
     }
 }
