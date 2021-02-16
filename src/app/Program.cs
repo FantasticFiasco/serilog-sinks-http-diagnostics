@@ -42,7 +42,7 @@ namespace App
             Log.Info("Options");
             Log.Info($"  Destination: {options.Destination}");
             Log.Info($"  Concurrency: {options.Concurrency} tasks");
-            Log.Info($"  Rate:        {options.Rate} events/sec/task");
+            Log.Info($"  Rate:        {options.Rate} log events/sec/task");
             Log.Info($"  Max size:    {options.MaxSize} KB");
 
             Serilog.Debugging.SelfLog.Enable(OnError);

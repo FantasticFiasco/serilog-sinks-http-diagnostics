@@ -26,7 +26,7 @@ namespace App.Report
 
         private void OnTick(object? state)
         {
-            Log.Info($"Number of written events: {statistics.LogEventCount}");
+            Log.Info($"Number of written log events: {statistics.LogEventCount}");
         }
     }
 }
