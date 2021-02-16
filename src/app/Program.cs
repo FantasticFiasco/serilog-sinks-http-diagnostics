@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using App.Report;
 using CommandLine;
@@ -49,7 +50,13 @@ namespace App
             var printer = new Printer(statistics);
             printer.Start();
 
-            var tasks = StartTasks();
+            var cts = new CancellationTokenSource();
+            var tasks = StartTasks(cts.Token);
+
+            Console.WriteLine("Press any key to cancel...");
+            Console.ReadKey();
+
+            cts.Cancel();
             await Task.WhenAll(tasks);
         }
 
@@ -63,21 +70,19 @@ namespace App
             Log.Error($"[DIAGNOSTICS] {message}");
         }
 
-        private Task[] StartTasks()
+        private Task[] StartTasks(CancellationToken token)
         {
             return Enumerable
                 .Range(1, options.Concurrency)
-                .Select(id => StartTask(id))
+                .Select(id => StartTask(id, token))
                 .ToArray();
         }
 
-        private async Task StartTask(int id)
+        private async Task StartTask(int id, CancellationToken token)
         {
-            Log.Info($"Starting up task {id}...");
-
             var sleep = 1000 / options.Rate;
 
-            while (true)
+            while (!token.IsCancellationRequested)
             {
                 var size = (int)(options.MaxSize * random.NextDouble());
                 var message = new string('*', size);
