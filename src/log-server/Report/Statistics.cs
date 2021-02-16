@@ -3,13 +3,13 @@ using System.Collections.Concurrent;
 using System.Text;
 using System.Threading;
 
-namespace LogServer.Stats
+namespace LogServer.Report
 {
     public class Statistics
     {
         private readonly ConcurrentDictionary<LogEventSize, int> distribution;
         private long batchCount;
-        private long eventCount;
+        private long logEventCount;
 
         public Statistics()
         {
@@ -35,24 +35,24 @@ namespace LogServer.Stats
             }
         }
 
-        public long EventCount
+        public long LogEventCount
         {
-            get { return Interlocked.Read(ref eventCount); }
+            get { return Interlocked.Read(ref logEventCount); }
         }
 
-        public double? EventsPerMinute
+        public double? LogEventsPerMinute
         {
             get
             {
                 var duration = Duration();
 
                 return duration != null
-                    ? (double)Interlocked.Read(ref eventCount) / ((TimeSpan)duration).TotalSeconds
+                    ? (double)Interlocked.Read(ref logEventCount) / ((TimeSpan)duration).TotalSeconds
                     : null;
             }
         }
 
-        public void AddBatch(string[] logEvents)
+        public void ReportReceivedBatch(string[] logEvents)
         {
             if (Start == null)
             {
@@ -60,7 +60,7 @@ namespace LogServer.Stats
             }
 
             Interlocked.Increment(ref batchCount);
-            Interlocked.Add(ref eventCount, logEvents.Length);
+            Interlocked.Add(ref logEventCount, logEvents.Length);
 
             foreach (var logEvent in logEvents)
             {
@@ -69,7 +69,7 @@ namespace LogServer.Stats
             }
         }
 
-        public int NbrOfEvents(LogEventSize size)
+        public int NbrOfLogEvents(LogEventSize size)
         {
             bool success = distribution.TryGetValue(size, out int count);
             return success ? count : 0;

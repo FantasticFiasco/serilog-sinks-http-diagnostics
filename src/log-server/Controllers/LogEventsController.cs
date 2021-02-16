@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using LogServer.Stats;
+using LogServer.Report;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -25,7 +25,7 @@ namespace LogServer.Controllers
         {
             logger.LogInformation($"Received batch of {logEvents.Length} log events");
 
-            statistics.AddBatch(logEvents.Select(logEvent => logEvent.Payload).ToArray());
+            statistics.ReportReceivedBatch(logEvents.Select(logEvent => logEvent.Payload).ToArray());
         }
     }
 }

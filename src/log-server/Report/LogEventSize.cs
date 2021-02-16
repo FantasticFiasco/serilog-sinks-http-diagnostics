@@ -1,4 +1,4 @@
-namespace LogServer.Stats
+namespace LogServer.Report
 {
     public class LogEventSize
     {
