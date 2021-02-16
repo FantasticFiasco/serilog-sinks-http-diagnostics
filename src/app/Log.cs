@@ -1,3 +1,4 @@
+using System;
 using Spectre.Console;
 
 namespace App
@@ -6,7 +7,7 @@ namespace App
     {
         public static void Info(string message)
         {
-            AnsiConsole.MarkupLine("[blue]{0}[/]", message.EscapeMarkup());
+            Console.WriteLine(message);
         }
 
         public static void Error(string message)

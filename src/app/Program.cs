@@ -11,6 +11,7 @@ namespace App
     class Program
     {
         private readonly Options options;
+        private readonly Statistics statistics;
         private readonly Random random;
         private readonly ILogger logger;
 
@@ -24,12 +25,13 @@ namespace App
         {
             this.options = options;
 
+            statistics = new Statistics();
             random = new Random();
 
             Serilog.Debugging.SelfLog.Enable(OnError);
 
             logger = new LoggerConfiguration()
-                .WriteTo.Sink<Statistics>()
+                .WriteTo.Sink(statistics)
                 .WriteTo.Http(
                     requestUri: options.Destination,
                     textFormatter: new LogEventFormatter(),
@@ -39,8 +41,6 @@ namespace App
 
         private async Task RunAsync()
         {
-            var statistics = new Statistics();
-
             var printer = new Printer(statistics);
             printer.Start();
 
