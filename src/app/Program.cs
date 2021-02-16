@@ -84,8 +84,9 @@ namespace App
 
             while (!token.IsCancellationRequested)
             {
-                var size = (int)(options.MaxSize * random.NextDouble());
-                var message = new string('*', size);
+                var sizeInKB = (int)(options.MaxSize * random.NextDouble());
+                var message = new string('*', sizeInKB * 1024);
+
                 logger.Information(message);
 
                 await Task.Delay(sleep);
