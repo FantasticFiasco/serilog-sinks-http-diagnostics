@@ -80,7 +80,7 @@ namespace App
 
         private async Task StartTask(int id, CancellationToken token)
         {
-            var sleep = 1000 / options.Rate;
+            var delayInMs = 1000 / options.Rate;
 
             while (!token.IsCancellationRequested)
             {
@@ -89,7 +89,7 @@ namespace App
 
                 logger.Information(message);
 
-                await Task.Delay(sleep);
+                await Task.Delay(delayInMs);
             }
         }
     }
