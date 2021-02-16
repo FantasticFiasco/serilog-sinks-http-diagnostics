@@ -66,14 +66,14 @@ namespace LogServer.Report
             };
 
             var total = rows
-                .Select(row => row.NbrOfEvents)
+                .Select(row => row.NbrOfLogEvents)
                 .Sum();
 
             messageBuilder.AppendLine("Distribution:");
 
             foreach (var row in rows)
             {
-                messageBuilder.AppendLine(row.Template.Format(row.NbrOfEvents, new string('#', 20 * row.NbrOfEvents / total)));
+                messageBuilder.AppendLine(row.Template.Format(row.NbrOfLogEvents, new string('#', 20 * row.NbrOfLogEvents / total)));
             }
 
             logger.LogInformation(messageBuilder.ToString());
