@@ -27,9 +27,6 @@ namespace App
 
             statistics = new Statistics();
             random = new Random();
-
-            Serilog.Debugging.SelfLog.Enable(OnError);
-
             logger = new LoggerConfiguration()
                 .WriteTo.Sink(statistics)
                 .WriteTo.Http(
@@ -41,6 +38,14 @@ namespace App
 
         private async Task RunAsync()
         {
+            Log.Info("Options");
+            Log.Info($"  Destination: {options.Destination}");
+            Log.Info($"  Concurrency: {options.Concurrency} tasks");
+            Log.Info($"  Rate:        {options.Rate} events/sec/task");
+            Log.Info($"  Max size:    {options.MaxSize} KB");
+
+            Serilog.Debugging.SelfLog.Enable(OnError);
+
             var printer = new Printer(statistics);
             printer.Start();
 
