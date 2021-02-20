@@ -7,20 +7,21 @@ namespace LogServer.Report
 {
     public class Statistics
     {
-        private readonly ConcurrentDictionary<LogEventSize, int> distribution;
-        private long batchCount;
+        private readonly ConcurrentBag<int> batchSizes;
+        private readonly ConcurrentDictionary<LogEventSize, int> logEventDistribution;
         private long logEventCount;
 
         public Statistics()
         {
-            distribution = new ConcurrentDictionary<LogEventSize, int>();
+            batchSizes = new ConcurrentBag<int>();
+            logEventDistribution = new ConcurrentDictionary<LogEventSize, int>();
         }
 
         public DateTime? Start { get; set; }
 
         public long BatchCount
         {
-            get { return Interlocked.Read(ref batchCount); }
+            get { return batchSizes.Count; }
         }
 
         public double? BatchesPerMinute
@@ -30,7 +31,7 @@ namespace LogServer.Report
                 var duration = Duration();
 
                 return duration != null
-                    ? (double)Interlocked.Read(ref batchCount) / ((TimeSpan)duration).TotalSeconds
+                    ? (double)BatchCount / ((TimeSpan)duration).TotalSeconds
                     : null;
             }
         }
@@ -52,26 +53,26 @@ namespace LogServer.Report
             }
         }
 
-        public void ReportReceivedBatch(string[] logEvents)
+        public void ReportReceivedBatch(int batchSize, int[] logEventSizes)
         {
             if (Start == null)
             {
                 Start = DateTime.Now;
             }
 
-            Interlocked.Increment(ref batchCount);
-            Interlocked.Add(ref logEventCount, logEvents.Length);
+            batchSizes.Add(batchSize);
+            Interlocked.Add(ref logEventCount, logEventSizes.Length);
 
-            foreach (var logEvent in logEvents)
+            foreach (var logEventSize in logEventSizes)
             {
-                var size = LogEventSize.From(logEvent);
-                distribution.AddOrUpdate(size, 1, (key, oldValue) => oldValue + 1);
+                var size = LogEventSize.From(logEventSize);
+                logEventDistribution.AddOrUpdate(size, 1, (key, oldValue) => oldValue + 1);
             }
         }
 
         public int NbrOfLogEvents(LogEventSize size)
         {
-            bool success = distribution.TryGetValue(size, out int count);
+            bool success = logEventDistribution.TryGetValue(size, out int count);
             return success ? count : 0;
         }
 
