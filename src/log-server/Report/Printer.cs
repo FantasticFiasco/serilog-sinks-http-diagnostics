@@ -62,7 +62,7 @@ namespace LogServer.Report
                 new DistributionRow("    100 KB <= size < 512 KB {0,9} |{1}", statistics.LogEventsOfSize(LogEventSize.Between100And512KB)),
                 new DistributionRow("    512 KB <= size < 1 MB   {0,9} |{1}", statistics.LogEventsOfSize(LogEventSize.Between512KBAnd1MB)),
                 new DistributionRow("    1 MB   <= size < 5 MB   {0,9} |{1}", statistics.LogEventsOfSize(LogEventSize.Between1And5MB)),
-                new DistributionRow("    5 MB   <= size          {0,9} |{1}", statistics.LogEventsOfSize(LogEventSize.Above5MB)),
+                new DistributionRow("    5 MB   <= size          {0,9} |{1}", statistics.LogEventsOfSize(LogEventSize.EqualToAndAbove5MB)),
             };
 
             var total = rows

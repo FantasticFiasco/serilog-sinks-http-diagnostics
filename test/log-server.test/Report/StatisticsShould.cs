@@ -154,6 +154,7 @@ namespace LogServer.Report
         [InlineData(LogEventSize.Between100And512KB, 2 * 7)]
         [InlineData(LogEventSize.Between512KBAnd1MB, 2 * 8)]
         [InlineData(LogEventSize.Between1And5MB, 2 * 9)]
+        [InlineData(LogEventSize.EqualToAndAbove5MB, 2 * 10)]
         public void ReturnLogEventsOfSize(LogEventSize size, int want)
         {
             // Arrange
@@ -192,6 +193,10 @@ namespace LogServer.Report
             // Between1And5MB
             statistics.ReportReceivedBatch(1, Repeat(9, 1 * ByteSize.MB));
             statistics.ReportReceivedBatch(1, Repeat(9, 5 * ByteSize.MB - 1));
+
+            // EqualToAndAbove5MB
+            statistics.ReportReceivedBatch(1, Repeat(10, 5 * ByteSize.MB));
+            statistics.ReportReceivedBatch(1, Repeat(10, 10 * ByteSize.MB));
 
             // Act
             var got = statistics.LogEventsOfSize(size);
