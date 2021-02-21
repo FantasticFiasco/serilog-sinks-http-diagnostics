@@ -66,7 +66,7 @@ namespace LogServer.Report
 
             foreach (var logEventSize in logEventSizes)
             {
-                var size = LogEventSize.From(logEventSize);
+                var size = LogEventSizeConverter.From(logEventSize);
                 logEventDistribution.AddOrUpdate(size, 1, (key, oldValue) => oldValue + 1);
             }
         }

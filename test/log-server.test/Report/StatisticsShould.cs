@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using LogServer.Time;
 using Moq;
 using Shouldly;
@@ -141,6 +142,70 @@ namespace LogServer.Report
 
             // Assert
             got.ShouldBe(want);
+        }
+
+        [Theory]
+        [InlineData(LogEventSize.Below512B, 2 * 1)]
+        [InlineData(LogEventSize.Between512BAnd1KB, 2 * 2)]
+        [InlineData(LogEventSize.Between1And5KB, 2 * 3)]
+        [InlineData(LogEventSize.Between5And10KB, 2 * 4)]
+        [InlineData(LogEventSize.Between10And50KB, 2 * 5)]
+        [InlineData(LogEventSize.Between50And100KB, 2 * 6)]
+        [InlineData(LogEventSize.Between100And512KB, 2 * 7)]
+        [InlineData(LogEventSize.Between512KBAnd1MB, 2 * 8)]
+        [InlineData(LogEventSize.Between1And5MB, 2 * 9)]
+        public void ReturnLogEventsOfSize(LogEventSize size, int want)
+        {
+            // Arrange
+            // Below512B
+            statistics.ReportReceivedBatch(1, Repeat(1, 1 * ByteSize.B));
+            statistics.ReportReceivedBatch(1, Repeat(1, 512 * ByteSize.B - 1));
+
+            // Between512BAnd1KB
+            statistics.ReportReceivedBatch(1, Repeat(2, 512 * ByteSize.B));
+            statistics.ReportReceivedBatch(1, Repeat(2, 1 * ByteSize.KB - 1));
+
+            // Between1And5KB
+            statistics.ReportReceivedBatch(1, Repeat(3, 1 * ByteSize.KB));
+            statistics.ReportReceivedBatch(1, Repeat(3, 5 * ByteSize.KB - 1));
+
+            // Between5And10KB
+            statistics.ReportReceivedBatch(1, Repeat(4, 5 * ByteSize.KB));
+            statistics.ReportReceivedBatch(1, Repeat(4, 10 * ByteSize.KB - 1));
+
+            // Between10And50KB
+            statistics.ReportReceivedBatch(1, Repeat(5, 10 * ByteSize.KB));
+            statistics.ReportReceivedBatch(1, Repeat(5, 50 * ByteSize.KB - 1));
+
+            // Between50And100KB
+            statistics.ReportReceivedBatch(1, Repeat(6, 50 * ByteSize.KB));
+            statistics.ReportReceivedBatch(1, Repeat(6, 100 * ByteSize.KB - 1));
+
+            // Between100And512KB
+            statistics.ReportReceivedBatch(1, Repeat(7, 100 * ByteSize.KB));
+            statistics.ReportReceivedBatch(1, Repeat(7, 512 * ByteSize.KB - 1));
+
+            // Between512KBAnd1MB
+            statistics.ReportReceivedBatch(1, Repeat(8, 512 * ByteSize.KB));
+            statistics.ReportReceivedBatch(1, Repeat(8, 1 * ByteSize.MB - 1));
+
+            // Between1And5MB
+            statistics.ReportReceivedBatch(1, Repeat(9, 1 * ByteSize.MB));
+            statistics.ReportReceivedBatch(1, Repeat(9, 5 * ByteSize.MB - 1));
+
+            // Act
+            var got = statistics.LogEventsOfSize(size);
+
+            // Assert
+            got.ShouldBe(want);
+        }
+
+        private long[] Repeat(int count, long value)
+        {
+            return Enumerable
+                .Range(0, count)
+                .Select(_ => value)
+                .ToArray();
         }
     }
 }
