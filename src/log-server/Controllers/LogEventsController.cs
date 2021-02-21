@@ -2,7 +2,6 @@
 using System.Text;
 using LogServer.Report;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace LogServer.Controllers
 {
@@ -11,12 +10,10 @@ namespace LogServer.Controllers
     public class LogEventsController : ControllerBase
     {
         private readonly Statistics statistics;
-        private readonly ILogger<LogEventsController> logger;
 
-        public LogEventsController(Statistics statistics, ILogger<LogEventsController> logger)
+        public LogEventsController(Statistics statistics)
         {
             this.statistics = statistics;
-            this.logger = logger;
         }
 
         [HttpPost]
@@ -29,7 +26,6 @@ namespace LogServer.Controllers
                 .Select(logEvent => UTF8Encoding.UTF8.GetByteCount(logEvent))
                 .ToArray();
 
-            logger.LogInformation($"Received batch of size {batchSize / ByteSize.KB} KB with {logEventSizes.Length} log events");
             statistics.ReportReceivedBatch(batchSize, logEventSizes);
         }
     }

@@ -113,6 +113,32 @@ namespace LogServer.Report
             got.ShouldBe(want);
         }
 
+        [Fact]
+        public void ReturnMinLogEventSize()
+        {
+            // Arrange
+            statistics.ReportReceivedBatch(1, new int[] { 27, 11, 99, 25, 78 });
+
+            // Act
+            var got = statistics.MinLogEventSize;
+
+            // Assert
+            got.ShouldBe(11);
+        }
+
+        [Fact]
+        public void ReturnMaxLogEventSize()
+        {
+            // Arrange
+            statistics.ReportReceivedBatch(1, new int[] { 27, 11, 99, 25, 78 });
+
+            // Act
+            var got = statistics.MaxLogEventSize;
+
+            // Assert
+            got.ShouldBe(99);
+        }
+
         [Theory]
         [InlineData(0, null, null)]
         [InlineData(1, 0.1, 10)]
