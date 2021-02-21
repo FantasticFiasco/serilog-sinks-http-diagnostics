@@ -26,13 +26,13 @@ namespace LogServer.Controllers
                     squigglyBracketCounter--;
                 }
 
-                if (squigglyBracketCounter == 0 && i > startIndex)
+                if (squigglyBracketCounter == 0 && json[i] == '}')
                 {
                     var logEventLength = i - startIndex + 1;
 
                     var logEvent = json
                         .Substring(startIndex, logEventLength)
-                        .Trim(',');
+                        .Trim(',', '\r', '\n');
 
                     logEvents.Add(logEvent);
 

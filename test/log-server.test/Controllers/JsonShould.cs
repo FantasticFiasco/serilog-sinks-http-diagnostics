@@ -30,5 +30,44 @@ namespace LogServer.Controllers
             // Assert
             got.ShouldBe(new string[] { "{\"a\":1}", "{\"b\":2}", "{\"c\":3}" });
         }
+
+        [Fact]
+        public void HandleCarriageReturn()
+        {
+            // Arrange
+            var json = "[{\"a\":1},\r{\"b\":2},\r{\"c\":3}]";
+
+            // Act
+            var got = Json.ParseArray(json);
+
+            // Assert
+            got.ShouldBe(new string[] { "{\"a\":1}", "{\"b\":2}", "{\"c\":3}" });
+        }
+
+        [Fact]
+        public void HandleLinFeed()
+        {
+            // Arrange
+            var json = "[{\"a\":1},\n{\"b\":2},\n{\"c\":3}]";
+
+            // Act
+            var got = Json.ParseArray(json);
+
+            // Assert
+            got.ShouldBe(new string[] { "{\"a\":1}", "{\"b\":2}", "{\"c\":3}" });
+        }
+
+        [Fact]
+        public void HandleCarriageReturnLinFeed()
+        {
+            // Arrange
+            var json = "[{\"a\":1},\r\n{\"b\":2},\r\n{\"c\":3}]";
+
+            // Act
+            var got = Json.ParseArray(json);
+
+            // Assert
+            got.ShouldBe(new string[] { "{\"a\":1}", "{\"b\":2}", "{\"c\":3}" });
+        }
     }
 }
