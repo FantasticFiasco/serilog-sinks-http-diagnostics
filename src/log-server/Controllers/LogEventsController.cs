@@ -29,7 +29,6 @@ namespace LogServer.Controllers
                 .Select(logEvent => UTF8Encoding.UTF8.GetByteCount(logEvent))
                 .ToArray();
 
-
             logger.LogInformation($"Received batch of size {batchSize / ByteSize.KB} KB with {logEvents.Length} log events");
             statistics.ReportReceivedBatch(batchSize, logEventSizes);
         }
