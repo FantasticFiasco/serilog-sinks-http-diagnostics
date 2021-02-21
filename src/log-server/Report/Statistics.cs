@@ -26,6 +26,21 @@ namespace LogServer.Report
             get { return batchSizes.Count; }
         }
 
+        public int MinBatchSize
+        {
+            get { return batchSizes.Min(); }
+        }
+
+        public int MaxBatchSize
+        {
+            get { return batchSizes.Max(); }
+        }
+
+        public double AverageBatchSize
+        {
+            get { return batchSizes.Average(); }
+        }
+
         public double? BatchesPerMinute
         {
             get

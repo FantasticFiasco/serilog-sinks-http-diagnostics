@@ -47,12 +47,17 @@ namespace LogServer.Report
             var now = clock.Now;
 
             var messageBuilder = new StringBuilder();
-            messageBuilder.AppendLine("Start:        {0:O}".Format(statistics.Start));
-            messageBuilder.AppendLine("Duration:     {0}".Format(statistics.Start != null ? now.Subtract((DateTime)statistics.Start) : ""));
-            messageBuilder.AppendLine("Batches:      {0}".Format(statistics.BatchCount));
-            messageBuilder.AppendLine("    /minute:  {0:N2}".Format(statistics.BatchesPerMinute));
-            messageBuilder.AppendLine("Log events:   {0}".Format(statistics.LogEventCount));
-            messageBuilder.AppendLine("    /minute:  {0:N2}".Format(statistics.LogEventsPerMinute));
+            messageBuilder.AppendLine("Start:         {0:O}".Format(statistics.Start));
+            messageBuilder.AppendLine("Duration:      {0}".Format(statistics.Start != null ? now.Subtract((DateTime)statistics.Start) : ""));
+            messageBuilder.AppendLine("");
+            messageBuilder.AppendLine("Batches:       {0}".Format(statistics.BatchCount));
+            messageBuilder.AppendLine("    /minute:   {0:N2}".Format(statistics.BatchesPerMinute));
+            messageBuilder.AppendLine("    min:       {0:N2} KB".Format(statistics.MinBatchSize / ByteSize.KB));
+            messageBuilder.AppendLine("    max:       {0:N2} KB".Format(statistics.MaxBatchSize / ByteSize.KB));
+            messageBuilder.AppendLine("    average:   {0:N2} KB".Format(statistics.AverageBatchSize / ByteSize.KB));
+            messageBuilder.AppendLine("");
+            messageBuilder.AppendLine("Log events:    {0}".Format(statistics.LogEventCount));
+            messageBuilder.AppendLine("    /minute:   {0:N2}".Format(statistics.LogEventsPerMinute));
 
             var rows = new[]
             {
@@ -68,6 +73,7 @@ namespace LogServer.Report
                 new DistributionRow("    5 MB   <= size          {0,9} |{1}", statistics.LogEventsOfSize(LogEventSize.EqualToAndAbove5MB)),
             };
 
+            messageBuilder.AppendLine("");
             messageBuilder.AppendLine("Distribution:");
 
             foreach (var row in rows)
