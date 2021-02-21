@@ -33,7 +33,7 @@ namespace LogServer.Report
         public void ReturnStart()
         {
             // Arrange
-            statistics.ReportReceivedBatch(1, new long[1]);
+            statistics.ReportReceivedBatch(1, new int[1]);
 
             // Act
             var got = statistics.Start;
@@ -52,7 +52,7 @@ namespace LogServer.Report
             // Arrange
             for (var i = 0; i < batchCount; i++)
             {
-                statistics.ReportReceivedBatch(1, new long[1]);
+                statistics.ReportReceivedBatch(1, new int[1]);
             }
 
             // Act
@@ -78,7 +78,7 @@ namespace LogServer.Report
 
             for (var i = 0; i < batchCount; i++)
             {
-                statistics.ReportReceivedBatch(1, new long[1]);
+                statistics.ReportReceivedBatch(1, new int[1]);
             }
 
             if (minutes != null)
@@ -103,7 +103,7 @@ namespace LogServer.Report
             // Arrange
             for (var i = 0; i < batchCount; i++)
             {
-                statistics.ReportReceivedBatch(1, new long[logEventsPerBatch]);
+                statistics.ReportReceivedBatch(1, new int[logEventsPerBatch]);
             }
 
             // Act
@@ -129,7 +129,7 @@ namespace LogServer.Report
 
             if (logEvents > 0)
             {
-                statistics.ReportReceivedBatch(1, new long[logEvents]);
+                statistics.ReportReceivedBatch(1, new int[logEvents]);
             }
 
             if (minutes != null)
@@ -205,7 +205,7 @@ namespace LogServer.Report
             got.ShouldBe(want);
         }
 
-        private long[] Repeat(int count, long value)
+        private int[] Repeat(int count, int value)
         {
             return Enumerable
                 .Range(0, count)

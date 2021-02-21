@@ -26,7 +26,7 @@ namespace LogServer.Report
         [InlineData(5 * ByteSize.MB - 1, LogEventSize.Between1And5MB)]
         [InlineData(5 * ByteSize.MB, LogEventSize.EqualToAndAbove5MB)]
         [InlineData(10 * ByteSize.MB, LogEventSize.EqualToAndAbove5MB)]
-        public void ReturnLogEventSize(long logEventSize, LogEventSize want)
+        public void ReturnLogEventSize(int logEventSize, LogEventSize want)
         {
             // Act
             var got = LogEventSizeConverter.From(logEventSize);

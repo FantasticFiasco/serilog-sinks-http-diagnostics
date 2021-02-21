@@ -2,7 +2,7 @@ namespace LogServer.Report
 {
     public static class LogEventSizeConverter
     {
-        public static LogEventSize From(long logEventSize)
+        public static LogEventSize From(int logEventSize)
         {
             if (logEventSize < 512 * ByteSize.B) return LogEventSize.Below512B;
             if (logEventSize < 1 * ByteSize.KB) return LogEventSize.Between512BAnd1KB;

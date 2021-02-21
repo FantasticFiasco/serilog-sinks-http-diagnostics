@@ -8,20 +8,20 @@ namespace LogServer.Report
     public class Statistics
     {
         private readonly Clock clock;
-        private readonly ConcurrentBag<long> batchSizes;
-        private readonly ConcurrentDictionary<LogEventSize, long> logEventDistribution;
+        private readonly ConcurrentBag<int> batchSizes;
+        private readonly ConcurrentDictionary<LogEventSize, int> logEventDistribution;
 
         public Statistics(Clock clock)
         {
             this.clock = clock;
 
-            batchSizes = new ConcurrentBag<long>();
-            logEventDistribution = new ConcurrentDictionary<LogEventSize, long>();
+            batchSizes = new ConcurrentBag<int>();
+            logEventDistribution = new ConcurrentDictionary<LogEventSize, int>();
         }
 
         public DateTime? Start { get; set; }
 
-        public long BatchCount
+        public int BatchCount
         {
             get { return batchSizes.Count; }
         }
@@ -38,7 +38,7 @@ namespace LogServer.Report
             }
         }
 
-        public long LogEventCount
+        public int LogEventCount
         {
             get { return logEventDistribution.Values.Sum(); }
         }
@@ -55,7 +55,7 @@ namespace LogServer.Report
             }
         }
 
-        public void ReportReceivedBatch(long batchSize, long[] logEventSizes)
+        public void ReportReceivedBatch(int batchSize, int[] logEventSizes)
         {
             if (Start == null)
             {
@@ -71,9 +71,9 @@ namespace LogServer.Report
             }
         }
 
-        public long LogEventsOfSize(LogEventSize size)
+        public int LogEventsOfSize(LogEventSize size)
         {
-            bool success = logEventDistribution.TryGetValue(size, out long count);
+            bool success = logEventDistribution.TryGetValue(size, out int count);
             return success ? count : 0;
         }
 

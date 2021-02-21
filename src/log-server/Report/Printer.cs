@@ -77,7 +77,7 @@ namespace LogServer.Report
             logger.LogInformation(messageBuilder.ToString());
         }
 
-        record DistributionRow(string Template, long NbrOfLogEvents);
+        record DistributionRow(string Template, int NbrOfLogEvents);
     }
 }
 

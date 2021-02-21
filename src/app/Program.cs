@@ -84,7 +84,7 @@ namespace App
 
             while (!token.IsCancellationRequested)
             {
-                var size = (int)(options.MaxSize * ByteSize.KB * random.NextDouble());
+                var size = (int)Math.Round(options.MaxSize * ByteSize.KB * random.NextDouble());
                 var message = new string('*', size);
 
                 logger.Information(message);
