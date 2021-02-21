@@ -39,25 +39,34 @@ namespace App
 
         private async Task RunAsync()
         {
-            Log.Info("Options");
-            Log.Info($"  Destination: {options.Destination}");
-            Log.Info($"  Concurrency: {options.Concurrency} tasks");
-            Log.Info($"  Rate:        {options.Rate} log events/sec/task");
-            Log.Info($"  Max size:    {options.MaxSize} KB");
+            Log.Info("App started with the following options:");
+            Log.Info($"  Destination:       {options.Destination}");
+            Log.Info($"  Concurrency:       {options.Concurrency} tasks");
+            Log.Info($"  Rate:              {options.Rate} log events/sec/task");
+            Log.Info($"  Max message size:  {options.MaxMessageSize} KB");
+            Log.Info("");
 
             Serilog.Debugging.SelfLog.Enable(OnError);
 
-            var printer = new Printer(statistics);
+            var appState = AppState.Running;
+            var printer = new Printer(statistics, () => appState);
             printer.Start();
 
-            var cts = new CancellationTokenSource();
-            var tasks = StartTasks(cts.Token);
+            while (appState != AppState.Aborting)
+            {
+                var cts = new CancellationTokenSource();
+                Task[] tasks = new Task[0];
 
-            Console.WriteLine("Press any key to cancel...");
-            Console.ReadKey();
+                if (appState == AppState.Running)
+                {
+                    tasks = StartTasks(cts.Token);
+                }
 
-            cts.Cancel();
-            await Task.WhenAll(tasks);
+                appState = NextAppState(appState);
+
+                cts.Cancel();
+                await Task.WhenAll(tasks);
+            }
         }
 
         private void OnError(string message)
@@ -84,12 +93,39 @@ namespace App
 
             while (!token.IsCancellationRequested)
             {
-                var size = (int)Math.Round(options.MaxSize * ByteSize.KB * random.NextDouble());
+                var size = (int)Math.Round(options.MaxMessageSize * ByteSize.KB * random.NextDouble());
                 var message = new string('*', size);
 
                 logger.Information(message);
 
                 await Task.Delay(delayInMs);
+            }
+        }
+
+        private AppState NextAppState(AppState current)
+        {
+            while (true)
+            {
+                var key = Console.ReadKey().Key;
+
+                switch (current)
+                {
+                    case AppState.Running:
+                        switch (key)
+                        {
+                            case ConsoleKey.Spacebar: return AppState.Paused;
+                            case ConsoleKey.Q: return AppState.Aborting;
+                        }
+                        break;
+
+                    case AppState.Paused:
+                        switch (key)
+                        {
+                            case ConsoleKey.Spacebar: return AppState.Running;
+                            case ConsoleKey.Q: return AppState.Aborting;
+                        }
+                        break;
+                }
             }
         }
     }

@@ -14,6 +14,6 @@ namespace App
         public int Rate { get; set; } = 1;
 
         [Option('m', "max-message-size", Default = 10, HelpText = "The maximum size, in KB, of a logged message. Please note that this is a limit of the message size, not the serialized log event size.")]
-        public int MaxSize { get; set; } = 10;
+        public int MaxMessageSize { get; set; } = 10;
     }
 }
