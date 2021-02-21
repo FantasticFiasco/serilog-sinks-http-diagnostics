@@ -1,17 +1,20 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Threading;
+using LogServer.Time;
 
 namespace LogServer.Report
 {
     public class Statistics
     {
+        private readonly Clock clock;
         private readonly ConcurrentBag<long> batchSizes;
         private readonly ConcurrentDictionary<LogEventSize, long> logEventDistribution;
 
-        public Statistics()
+        public Statistics(Clock clock)
         {
+            this.clock = clock;
+
             batchSizes = new ConcurrentBag<long>();
             logEventDistribution = new ConcurrentDictionary<LogEventSize, long>();
         }
@@ -56,7 +59,7 @@ namespace LogServer.Report
         {
             if (Start == null)
             {
-                Start = DateTime.Now;
+                Start = clock.Now;
             }
 
             batchSizes.Add(batchSize);
@@ -79,7 +82,7 @@ namespace LogServer.Report
             var start = Start;
 
             return start != null
-                ? DateTime.Now.Subtract((DateTime)start)
+                ? clock.Now.Subtract((DateTime)start)
                 : null;
         }
     }

@@ -1,4 +1,5 @@
 using LogServer.Report;
+using LogServer.Time;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -20,6 +21,7 @@ namespace LogServer
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddSingleton<Clock>()
                 .AddSingleton<Statistics>()
                 .AddHostedService<Printer>()
                 .Configure<KestrelServerOptions>(options =>
