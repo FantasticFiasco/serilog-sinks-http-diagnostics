@@ -1,31 +1,32 @@
 ﻿using System.Linq;
+using System.Text;
 using LogServer.Report;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace LogServer.Controllers
 {
-    public record LogEvent(string Payload);
-
     [ApiController]
     [Route("")]
     public class LogEventsController : ControllerBase
     {
         private readonly Statistics statistics;
-        private readonly ILogger<LogEventsController> logger;
 
-        public LogEventsController(Statistics statistics, ILogger<LogEventsController> logger)
+        public LogEventsController(Statistics statistics)
         {
             this.statistics = statistics;
-            this.logger = logger;
         }
 
         [HttpPost]
-        public void Post([FromBody] LogEvent[] logEvents)
+        public void Post([FromBody] string logEventBatch)
         {
-            logger.LogInformation($"Received batch of {logEvents.Length} log events");
+            int batchSize = UTF8Encoding.UTF8.GetByteCount(logEventBatch);
 
-            statistics.ReportReceivedBatch(logEvents.Select(logEvent => logEvent.Payload).ToArray());
+            var logEventSizes = Json
+                .ParseArray(logEventBatch)
+                .Select(logEvent => UTF8Encoding.UTF8.GetByteCount(logEvent))
+                .ToArray();
+
+            statistics.ReportReceivedBatch(batchSize, logEventSizes);
         }
     }
 }

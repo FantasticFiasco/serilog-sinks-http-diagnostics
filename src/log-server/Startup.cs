@@ -1,6 +1,8 @@
 using LogServer.Report;
+using LogServer.Time;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,9 +20,22 @@ namespace LogServer
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<Statistics>();
-            services.AddHostedService<Printer>();
-            services.AddControllers();
+            services
+                .AddSingleton<Clock>()
+                .AddSingleton<Statistics>()
+                .AddHostedService<Printer>()
+                .Configure<KestrelServerOptions>(options =>
+                    {
+                        options.Limits.MaxRequestBodySize = int.MaxValue;
+                    })
+                .Configure<IISServerOptions>(options =>
+                    {
+                        options.MaxRequestBodySize = int.MaxValue;
+                    })
+                .AddControllers(configure =>
+                    {
+                        configure.InputFormatters.Insert(0, new RawJsonBodyInputFormatter());
+                    });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

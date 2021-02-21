@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using App.Report;
 using CommandLine;
 using Serilog;
+using Serilog.Sinks.Http;
 using Serilog.Sinks.Http.BatchFormatters;
 
 namespace App
@@ -32,7 +33,6 @@ namespace App
                 .WriteTo.Sink(statistics)
                 .WriteTo.Http(
                     requestUri: options.Destination,
-                    textFormatter: new LogEventFormatter(),
                     batchFormatter: new ArrayBatchFormatter(null))
                 .CreateLogger();
         }
@@ -84,8 +84,8 @@ namespace App
 
             while (!token.IsCancellationRequested)
             {
-                var sizeInKB = (int)(options.MaxSize * random.NextDouble());
-                var message = new string('*', sizeInKB * 1024);
+                var size = (int)Math.Round(options.MaxSize * ByteSize.KB * random.NextDouble());
+                var message = new string('*', size);
 
                 logger.Information(message);
 
