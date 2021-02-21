@@ -4,9 +4,7 @@ namespace App
 {
     public class Options
     {
-        [Option(
-            'd',
-            "destination", Default = "http://localhost:8080", HelpText = "The URL of the log server")]
+        [Option('d', "destination", Default = "http://localhost:8080", HelpText = "The URL of the log server")]
         public string Destination { get; set; } = "http://localhost:8080";
 
         [Option('c', "concurrency", Default = 10, HelpText = "The number of concurrent tasks writing log events")]
