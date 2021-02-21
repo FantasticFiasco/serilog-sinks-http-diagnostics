@@ -71,7 +71,7 @@ namespace LogServer.Report
             }
         }
 
-        public long NbrOfLogEvents(LogEventSize size)
+        public long LogEventsOfSize(LogEventSize size)
         {
             bool success = logEventDistribution.TryGetValue(size, out long count);
             return success ? count : 0;
