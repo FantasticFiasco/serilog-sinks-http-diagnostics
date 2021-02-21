@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LogServer.Time;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -11,13 +12,15 @@ namespace LogServer.Report
     public class Printer : BackgroundService
     {
         private readonly Statistics statistics;
+        private readonly Clock clock;
         private readonly ILogger<Printer> logger;
 
         private Timer? timer;
 
-        public Printer(Statistics statistics, ILogger<Printer> logger)
+        public Printer(Statistics statistics, Clock clock, ILogger<Printer> logger)
         {
             this.statistics = statistics;
+            this.clock = clock;
             this.logger = logger;
         }
 
@@ -41,7 +44,7 @@ namespace LogServer.Report
                 return;
             }
 
-            var now = DateTime.Now;
+            var now = clock.Now;
 
             var messageBuilder = new StringBuilder();
             messageBuilder.AppendLine("Start:        {0:O}".Format(statistics.Start));
