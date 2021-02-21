@@ -17,7 +17,7 @@ namespace LogServer.Report
         public static readonly LogEventSize Between1And5MB = new LogEventSize();
         public static readonly LogEventSize Above5MB = new LogEventSize();
 
-        public static LogEventSize From(int logEventSize)
+        public static LogEventSize From(long logEventSize)
         {
             if (logEventSize < 512 * ByteSize.B) return Below512B;
             if (logEventSize < 1 * ByteSize.KB) return Between512BAnd1KB;

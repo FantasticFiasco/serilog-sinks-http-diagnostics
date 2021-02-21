@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using App.Report;
 using CommandLine;
 using Serilog;
+using Serilog.Sinks.Http;
 using Serilog.Sinks.Http.BatchFormatters;
 
 namespace App
@@ -83,7 +84,7 @@ namespace App
 
             while (!token.IsCancellationRequested)
             {
-                var size = (int)(1024 * options.MaxSize * random.NextDouble());
+                var size = (int)(options.MaxSize * ByteSize.KB * random.NextDouble());
                 var message = new string('*', size);
 
                 logger.Information(message);

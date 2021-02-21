@@ -73,13 +73,13 @@ namespace LogServer.Report
 
             foreach (var row in rows)
             {
-                messageBuilder.AppendLine(row.Template.Format(row.NbrOfLogEvents, new string('#', 20 * row.NbrOfLogEvents / total)));
+                messageBuilder.AppendLine(row.Template.Format(row.NbrOfLogEvents, new string('#', (int)(20 * row.NbrOfLogEvents / total))));
             }
 
             logger.LogInformation(messageBuilder.ToString());
         }
 
-        record DistributionRow(string Template, int NbrOfLogEvents);
+        record DistributionRow(string Template, long NbrOfLogEvents);
     }
 }
 

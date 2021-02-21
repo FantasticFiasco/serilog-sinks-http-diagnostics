@@ -1,20 +1,19 @@
 using System;
 using System.Collections.Concurrent;
-using System.Text;
+using System.Linq;
 using System.Threading;
 
 namespace LogServer.Report
 {
     public class Statistics
     {
-        private readonly ConcurrentBag<int> batchSizes;
-        private readonly ConcurrentDictionary<LogEventSize, int> logEventDistribution;
-        private long logEventCount;
+        private readonly ConcurrentBag<long> batchSizes;
+        private readonly ConcurrentDictionary<LogEventSize, long> logEventDistribution;
 
         public Statistics()
         {
-            batchSizes = new ConcurrentBag<int>();
-            logEventDistribution = new ConcurrentDictionary<LogEventSize, int>();
+            batchSizes = new ConcurrentBag<long>();
+            logEventDistribution = new ConcurrentDictionary<LogEventSize, long>();
         }
 
         public DateTime? Start { get; set; }
@@ -31,14 +30,14 @@ namespace LogServer.Report
                 var duration = Duration();
 
                 return duration != null
-                    ? (double)BatchCount / ((TimeSpan)duration).TotalSeconds
+                    ? 60000.0 * BatchCount / ((TimeSpan)duration).TotalMilliseconds
                     : null;
             }
         }
 
         public long LogEventCount
         {
-            get { return Interlocked.Read(ref logEventCount); }
+            get { return logEventDistribution.Values.Sum(); }
         }
 
         public double? LogEventsPerMinute
@@ -48,12 +47,12 @@ namespace LogServer.Report
                 var duration = Duration();
 
                 return duration != null
-                    ? (double)Interlocked.Read(ref logEventCount) / ((TimeSpan)duration).TotalSeconds
+                    ? 60000.0 * LogEventCount / ((TimeSpan)duration).TotalMilliseconds
                     : null;
             }
         }
 
-        public void ReportReceivedBatch(int batchSize, int[] logEventSizes)
+        public void ReportReceivedBatch(long batchSize, long[] logEventSizes)
         {
             if (Start == null)
             {
@@ -61,7 +60,6 @@ namespace LogServer.Report
             }
 
             batchSizes.Add(batchSize);
-            Interlocked.Add(ref logEventCount, logEventSizes.Length);
 
             foreach (var logEventSize in logEventSizes)
             {
@@ -70,9 +68,9 @@ namespace LogServer.Report
             }
         }
 
-        public int NbrOfLogEvents(LogEventSize size)
+        public long NbrOfLogEvents(LogEventSize size)
         {
-            bool success = logEventDistribution.TryGetValue(size, out int count);
+            bool success = logEventDistribution.TryGetValue(size, out long count);
             return success ? count : 0;
         }
 
