@@ -68,17 +68,12 @@ namespace LogServer.Report
                 new DistributionRow("    5 MB   <= size          {0,9} |{1}", statistics.LogEventsOfSize(LogEventSize.EqualToAndAbove5MB)),
             };
 
-            var total = rows
-                .Select(row => row.NbrOfLogEvents)
-                .Sum();
-
             messageBuilder.AppendLine("Distribution:");
 
             foreach (var row in rows)
             {
-                messageBuilder.AppendLine(row.Template.Format(row.NbrOfLogEvents, new string('#', (int)(20 * row.NbrOfLogEvents / total))));
+                messageBuilder.AppendLine(row.Template.Format(row.NbrOfLogEvents, new string('#', (int)Math.Round(40.0 * row.NbrOfLogEvents / statistics.LogEventCount))));
             }
-
             logger.LogInformation(messageBuilder.ToString());
         }
 
