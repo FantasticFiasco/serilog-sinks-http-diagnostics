@@ -21,6 +21,11 @@ namespace App.Report
             timer = new Timer(OnTick, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(10));
         }
 
+        public void Print()
+        {
+            Log.Info(string.Format(MessageFormat(), statistics.LogEventCount));
+        }
+
         public void Dispose()
         {
             timer?.Dispose();
@@ -28,7 +33,7 @@ namespace App.Report
 
         private void OnTick(object? state)
         {
-            Log.Info(string.Format(MessageFormat(), statistics.LogEventCount));
+            Print();
         }
 
         private string MessageFormat()

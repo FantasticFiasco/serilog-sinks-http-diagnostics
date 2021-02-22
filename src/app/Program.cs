@@ -39,55 +39,67 @@ namespace App
 
         private async Task RunAsync()
         {
-            Log.Info("App started with the following options:");
+            Log.Info("App was started with:");
             Log.Info($"  Destination:       {options.Destination}");
             Log.Info($"  Concurrency:       {options.Concurrency} tasks");
             Log.Info($"  Rate:              {options.Rate} log events/sec/task");
             Log.Info($"  Max message size:  {options.MaxMessageSize} KB");
-            Log.Info("");
 
             Serilog.Debugging.SelfLog.Enable(OnError);
 
-            var appState = AppState.Running;
+            var appState = AppState.None;
+
             var printer = new Printer(statistics, () => appState);
             printer.Start();
 
+            CancellationTokenSource? cts = null;
+            Task[]? tasks = null;
+
             while (appState != AppState.Aborting)
             {
-                var cts = new CancellationTokenSource();
-                Task[] tasks = new Task[0];
-
-                if (appState == AppState.Running)
-                {
-                    tasks = StartTasks(cts.Token);
-                }
-
                 appState = NextAppState(appState);
 
-                cts.Cancel();
-                await Task.WhenAll(tasks);
+                // Let's do a line feed here since we might have gotten an input
+                Log.Info("");
+
+                switch (appState)
+                {
+                    case AppState.Running:
+                        cts = new CancellationTokenSource();
+                        tasks = RunTasksAsync(cts.Token);
+                        break;
+
+                    case AppState.Paused:
+                    case AppState.Aborting:
+                        cts?.Cancel();
+                        await Task.WhenAll(tasks ?? Enumerable.Empty<Task>());
+                        printer.Print();
+                        break;
+                }
             }
         }
 
         private void OnError(string message)
         {
-            if (message.Length > 200)
+            var maxLength = 200;
+
+            if (message.Length > maxLength)
             {
-                message = $"{message.Substring(0, 200)}...";
+                message = $"{message.Substring(0, maxLength)}...";
             }
 
             Log.Error($"[DIAGNOSTICS] {message}");
         }
 
-        private Task[] StartTasks(CancellationToken token)
+        private Task[] RunTasksAsync(CancellationToken token)
         {
             return Enumerable
                 .Range(1, options.Concurrency)
-                .Select(id => StartTask(id, token))
+                .Select(id => RunTaskAsync(id, token))
                 .ToArray();
         }
 
-        private async Task StartTask(int id, CancellationToken token)
+        private async Task RunTaskAsync(int id, CancellationToken token)
         {
             var delayInMs = 1000 / options.Rate;
 
@@ -104,29 +116,27 @@ namespace App
 
         private AppState NextAppState(AppState current)
         {
-            while (true)
+            switch (current)
             {
-                var key = Console.ReadKey().Key;
+                case AppState.None:
+                    return AppState.Running;
 
-                switch (current)
-                {
-                    case AppState.Running:
-                        switch (key)
-                        {
-                            case ConsoleKey.Spacebar: return AppState.Paused;
-                            case ConsoleKey.Q: return AppState.Aborting;
-                        }
-                        break;
+                case AppState.Running:
+                case AppState.Paused:
+                    switch (Console.ReadKey().Key)
+                    {
+                        case ConsoleKey.Spacebar:
+                            return current == AppState.Running ? AppState.Paused : AppState.Running;
+                        case ConsoleKey.Q:
+                            return AppState.Aborting;
+                    }
+                    break;
 
-                    case AppState.Paused:
-                        switch (key)
-                        {
-                            case ConsoleKey.Spacebar: return AppState.Running;
-                            case ConsoleKey.Q: return AppState.Aborting;
-                        }
-                        break;
-                }
+                case AppState.Aborting:
+                    return AppState.Aborting;
             }
+
+            return NextAppState(current);
         }
     }
 }
