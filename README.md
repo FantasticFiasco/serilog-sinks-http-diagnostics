@@ -1,6 +1,14 @@
-# Benchmarks for Serilog.Sinks.Http
+# Diagnostics for Serilog.Sinks.Http
 
 This repository contains one console application capable of generating log events and one ASP.NET Core application capable of receiving log events sent over the network using [Serilog.Sinks.Http](https://github.com/FantasticFiasco/serilog-sinks-http).
+
+## Console application
+
+![Console app](./assets/app.png)
+
+## Log server
+
+![Log server](./assets/log-server.png)
 
 The applications have been suited to fill at least two roles.
 
