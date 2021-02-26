@@ -1,10 +1,10 @@
 # Diagnostics for Serilog.Sinks.Http
 
-This repository contains two applications. The first one is a console application configured to use [Serilog.Sinks.Http](https://github.com/FantasticFiasco/serilog-sinks-http), capable of sending log events over the network. The amount of log events, and their size, can be configured using console arguments.
+This repository contains two applications. The first one is a console application configured to use [Serilog.Sinks.Http](https://github.com/FantasticFiasco/serilog-sinks-http), capable of sending log events over the network. The amount of log events, and their size, can be configured using arguments.
 
 ![Console app](./assets/app.png)
 
-The second application is a ASP.NET Core application acting as a log server, capable of receiving the log events sent by the console application. This log server is periodically printing information about received log events and their characteristics.
+The second application is a ASP.NET Core application acting as a log server, capable of receiving log events sent by the console application. This log server is periodically printing information about received log events and their characteristics.
 
 ![Log server](./assets/log-server.png)
 
