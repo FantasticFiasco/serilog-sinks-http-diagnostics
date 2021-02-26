@@ -1,31 +1,42 @@
 # Diagnostics for Serilog.Sinks.Http
 
-This repository contains two applications. The first one is a console application configured to use [Serilog.Sinks.Http](https://github.com/FantasticFiasco/serilog-sinks-http), capable of producing log events. The amount of log events, and the size of these log events, can be configured using console arguments.
+This repository contains two applications. The first one is a console application configured to use [Serilog.Sinks.Http](https://github.com/FantasticFiasco/serilog-sinks-http), capable of sending log events over the network. The amount of log events, and their size, can be configured using console arguments.
 
 ![Console app](./assets/app.png)
 
-The second application is a ASP.NET Core application acting as a log server, receiving the log events sent by the console application. This log server is periodically printing information about received events and their characteristics.
+The second application is a ASP.NET Core application acting as a log server, capable of receiving the log events sent by the console application. This log server is periodically printing information about received log events and their characteristics.
 
 ![Log server](./assets/log-server.png)
 
 ## Use-cases
 
-These two applications in the repository have been used to fulfil at least two use-cases.
+The applications in the repository have been built to fulfil two use-cases.
 
-## Use-case 1 - Act as benchmark
+### Use-case 1: Provide insights into the characteristics of your logging pattern
 
-Being able to control the amount of log events, and their size, lends itself well to provide a benchmark where we analyze the performance of the sink and the environment it acts within. Running the applications can tell you whether your infrastructure lives up to the expectations given the amount of log events you are producing.
+Do you know at which rate your application is producing log events? Do you know the average size of each log event? Are you sure that the buffer files won't overflow during peak load?
 
-## Use-case 2 - Provide insight into the characteristics of your log events
+The HTTP sink can be configured in many ways, but if you are unaware of the logging behavior of your application you have a higher risk of using a configuration that doesn't suit your application. Get to know your application. Let your application send its log events to the log server and get insights into the logging characteristics of your application. Make sure you don't lose those log events during peak load.
 
-TODO
+### Use-case 2: Act as benchmark
 
-The behavior of _Serilog.Sinks.Http_ is determined by its configuration. How often should we send a batch of log events over the network? How many buffer files should we use? Which size should the buffer files have?
+Being able to control the amount of log events, and their size, lends itself well to provide a benchmark where we analyze the performance of the sink and the environment it acts within.
 
-to see the amount of events the sink can send ot
+## Getting started using the console application
 
-## Console app using the Serilog HTTP sink
+Run the following commands to start the console application producing log events.
 
-The
+```bash
+cd ./src/app
+dotnet run -- --help
+dotnet run
+```
 
-## Log server receiving log events
+## Getting started using the ASP.NET Core log server
+
+Run the following command to start the log server.
+
+```bash
+cd ./src/log-server
+dotnet run
+```
