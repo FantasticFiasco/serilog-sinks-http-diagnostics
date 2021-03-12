@@ -45,7 +45,8 @@ namespace App
             Log.Info($"  Rate:              {options.Rate} log events/sec/task");
             Log.Info($"  Max message size:  {options.MaxMessageSize} KB");
 
-            Serilog.Debugging.SelfLog.Enable(OnError);
+            Errors.Clear();
+            Serilog.Debugging.SelfLog.Enable(message => Errors.Add(message));
 
             var appState = AppState.None;
 
@@ -77,18 +78,6 @@ namespace App
                         break;
                 }
             }
-        }
-
-        private void OnError(string message)
-        {
-            var maxLength = 200;
-
-            if (message.Length > maxLength)
-            {
-                message = $"{message.Substring(0, maxLength)}...";
-            }
-
-            Log.Error($"[DIAGNOSTICS] {message}");
         }
 
         private Task[] RunTasksAsync(CancellationToken token)
