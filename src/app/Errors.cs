@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 
 namespace App
 {
@@ -7,13 +8,24 @@ namespace App
     {
         private const string FileName = "errors.txt";
 
+        private static long count;
+
+        public static long Count
+        {
+            get { return Interlocked.Read(ref count); }
+        }
+
         public static void Clear()
         {
+            Interlocked.Exchange(ref count, 0);
+
             File.Delete(FileName);
         }
 
         public static void Add(string message)
         {
+            Interlocked.Increment(ref count);
+
             Print(message);
             WriteToFile(message);
         }
@@ -39,7 +51,7 @@ namespace App
                 ""
             };
 
-            File.AppendAllLines(lines);
+            File.AppendAllLines(FileName, lines);
         }
     }
 }
