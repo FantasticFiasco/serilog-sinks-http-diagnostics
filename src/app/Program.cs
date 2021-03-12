@@ -51,7 +51,7 @@ namespace App
 
             var appState = AppState.None;
 
-            var printer = new Printer(statistics, errors, () => appState);
+            var printer = new Printer(statistics, serilogErrors, () => appState);
             printer.Start();
 
             CancellationTokenSource? cts = null;

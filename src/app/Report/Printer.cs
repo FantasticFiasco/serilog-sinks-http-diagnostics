@@ -44,13 +44,13 @@ namespace App.Report
             switch (appState)
             {
                 case AppState.Running:
-                    return "[RUNNING]  Number of written log events: {0}; Errors: {1} (SPACE: Pause,  Q: Quit)";
+                    return "[RUNNING]  Number of written log events: {0}; Serilog errors: {1} (SPACE: Pause,  Q: Quit)";
 
                 case AppState.Paused:
-                    return "[PAUSED]   Number of written log events: {0}; Errors: {1} (SPACE: Resume, Q: Quit)";
+                    return "[PAUSED]   Number of written log events: {0}; Serilog errors: {1} (SPACE: Resume, Q: Quit)";
 
                 case AppState.Aborting:
-                    return "[ABORTING] Number of written log events: {0}; Errors: {1}";
+                    return "[ABORTING] Number of written log events: {0}; Serilog errors: {1}";
 
                 default:
                     throw new Exception($"Unsupported app state: {appState}");
