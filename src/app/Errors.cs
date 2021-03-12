@@ -1,10 +1,11 @@
+using System;
 using System.IO;
 
 namespace App
 {
     public static class Errors
     {
-        private static const FileName = "errors.txt"
+        private const string FileName = "errors.txt";
 
         public static void Clear()
         {
@@ -36,7 +37,7 @@ namespace App
                 DateTime.Now.ToString(),
                 message,
                 ""
-            }
+            };
 
             File.AppendAllLines(lines);
         }
