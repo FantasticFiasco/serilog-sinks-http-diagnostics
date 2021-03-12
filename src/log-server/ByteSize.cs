@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace LogServer.Report
+namespace LogServer
 {
     /// <summary>
     /// Class defining various multipliers of the unit byte.
