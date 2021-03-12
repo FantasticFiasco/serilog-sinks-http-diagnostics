@@ -4,30 +4,30 @@ using System.Threading;
 
 namespace App
 {
-    public static class Errors
+    public class Errors
     {
         private const string FileName = "errors.txt";
 
-        private static long count;
+        private long count;
 
-        public static long Count
+        public long Count
         {
             get { return Interlocked.Read(ref count); }
         }
 
-        public static void Clear()
+        public void Clear()
         {
             Interlocked.Exchange(ref count, 0);
 
             File.Delete(FileName);
         }
 
-        public static void Add(string message)
+        public void Add(string message)
         {
             Interlocked.Increment(ref count);
 
             Print(message);
-            WriteToFile(message);
+            AppendToFile(message);
         }
 
         private static void Print(string message)
@@ -42,11 +42,10 @@ namespace App
             Log.Error($"[DIAGNOSTICS] {message}");
         }
 
-        private static void WriteToFile(string message)
+        private static void AppendToFile(string message)
         {
-            var lines = new string[]
+            var lines = new[]
             {
-                DateTime.Now.ToString(),
                 message,
                 ""
             };

@@ -45,12 +45,13 @@ namespace App
             Log.Info($"  Rate:              {options.Rate} log events/sec/task");
             Log.Info($"  Max message size:  {options.MaxMessageSize} KB");
 
-            Errors.Clear();
-            Serilog.Debugging.SelfLog.Enable(message => Errors.Add(message));
+            var errors = new Errors();
+            errors.Clear();
+            Serilog.Debugging.SelfLog.Enable(message => errors.Add(message));
 
             var appState = AppState.None;
 
-            var printer = new Printer(statistics, () => appState);
+            var printer = new Printer(statistics, errors, () => appState);
             printer.Start();
 
             CancellationTokenSource? cts = null;
