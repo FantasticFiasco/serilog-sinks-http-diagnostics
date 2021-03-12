@@ -45,11 +45,13 @@ namespace App
             Log.Info($"  Rate:              {options.Rate} log events/sec/task");
             Log.Info($"  Max message size:  {options.MaxMessageSize} KB");
 
-            Serilog.Debugging.SelfLog.Enable(OnError);
+            var serilogErrors = new SerilogErrors();
+            serilogErrors.Clear();
+            Serilog.Debugging.SelfLog.Enable(message => serilogErrors.Add(message));
 
             var appState = AppState.None;
 
-            var printer = new Printer(statistics, () => appState);
+            var printer = new Printer(statistics, serilogErrors, () => appState);
             printer.Start();
 
             CancellationTokenSource? cts = null;
@@ -77,18 +79,6 @@ namespace App
                         break;
                 }
             }
-        }
-
-        private void OnError(string message)
-        {
-            var maxLength = 200;
-
-            if (message.Length > maxLength)
-            {
-                message = $"{message.Substring(0, maxLength)}...";
-            }
-
-            Log.Error($"[DIAGNOSTICS] {message}");
         }
 
         private Task[] RunTasksAsync(CancellationToken token)
