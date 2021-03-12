@@ -6,15 +6,15 @@ namespace App.Report
     public class Printer : IDisposable
     {
         private readonly Statistics statistics;
-        private readonly Errors errors;
+        private readonly SerilogErrors serilogErrors;
         private readonly Func<AppState> appStateProvider;
 
         private Timer? timer;
 
-        public Printer(Statistics statistics, Errors errors, Func<AppState> appStateProvider)
+        public Printer(Statistics statistics, SerilogErrors serilogErrors, Func<AppState> appStateProvider)
         {
             this.statistics = statistics;
-            this.errors = errors;
+            this.serilogErrors = serilogErrors;
             this.appStateProvider = appStateProvider;
         }
 
@@ -25,7 +25,7 @@ namespace App.Report
 
         public void Print()
         {
-            Log.Info(string.Format(MessageFormat(), statistics.LogEventCount, errors.Count));
+            Log.Info(string.Format(MessageFormat(), statistics.LogEventCount, serilogErrors.Count));
         }
 
         public void Dispose()

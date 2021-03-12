@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace App
 {
-    public class Errors
+    public class SerilogErrors
     {
         private const string FileName = "errors.txt";
 

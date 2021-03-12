@@ -45,9 +45,9 @@ namespace App
             Log.Info($"  Rate:              {options.Rate} log events/sec/task");
             Log.Info($"  Max message size:  {options.MaxMessageSize} KB");
 
-            var errors = new Errors();
-            errors.Clear();
-            Serilog.Debugging.SelfLog.Enable(message => errors.Add(message));
+            var serilogErrors = new SerilogErrors();
+            serilogErrors.Clear();
+            Serilog.Debugging.SelfLog.Enable(message => serilogErrors.Add(message));
 
             var appState = AppState.None;
 
