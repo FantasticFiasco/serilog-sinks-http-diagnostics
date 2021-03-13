@@ -1,5 +1,6 @@
 .vs/
 bin/
 obj/
+*.user
 .DS_Store
 errors.txt
