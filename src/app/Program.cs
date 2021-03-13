@@ -100,7 +100,13 @@ namespace App
 
                 logger.Information(message);
 
-                await Task.Delay(delayInMs, ct);
+                try
+                {
+                    await Task.Delay(delayInMs, ct);
+                }
+                catch (TaskCanceledException)
+                {
+                }
             }
         }
 
