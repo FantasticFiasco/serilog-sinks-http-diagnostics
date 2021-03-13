@@ -5,7 +5,7 @@ namespace App
 {
     public class SerilogErrors
     {
-        private const string FileName = "errors.txt";
+        private const string FileName = "app.error.txt";
 
         private long count;
 

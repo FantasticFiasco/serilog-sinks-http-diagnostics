@@ -14,6 +14,7 @@ namespace LogServer.Report
             this.clock = clock;
 
             BatchSize = new MinMaxAverage();
+            LogEventsPerBatch = new MinMaxAverage();
             LogEventSize = new MinMaxAverage();
             logEventDistribution = new ConcurrentDictionary<LogEventSize, int>();
         }
@@ -22,28 +23,30 @@ namespace LogServer.Report
 
         public MinMaxAverage BatchSize { get; }
 
-        public double? BatchesPerMinute
+        public double? BatchesPerSecond
         {
             get
             {
                 var duration = Duration();
 
                 return duration != null
-                    ? 60000.0 * BatchSize.Count / ((TimeSpan)duration).TotalMilliseconds
+                    ? 1000.0 * BatchSize.Count / ((TimeSpan)duration).TotalMilliseconds
                     : null;
             }
         }
 
+        public MinMaxAverage LogEventsPerBatch { get; }
+
         public MinMaxAverage LogEventSize { get; }
 
-        public double? LogEventsPerMinute
+        public double? LogEventsPerSecond
         {
             get
             {
                 var duration = Duration();
 
                 return duration != null
-                    ? 60000.0 * LogEventSize.Count / ((TimeSpan)duration).TotalMilliseconds
+                    ? 1000.0 * LogEventSize.Count / ((TimeSpan)duration).TotalMilliseconds
                     : null;
             }
         }
@@ -56,6 +59,7 @@ namespace LogServer.Report
             }
 
             BatchSize.Update(batchSize);
+            LogEventsPerBatch.Update(logEventSizes.Length);
 
             foreach (var logEventSize in logEventSizes)
             {

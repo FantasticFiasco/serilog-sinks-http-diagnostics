@@ -10,7 +10,7 @@ namespace App
         [Option('c', "concurrency", Default = 10, HelpText = "The number of concurrent tasks writing log events")]
         public int Concurrency { get; set; } = 10;
 
-        [Option('r', "rate", Default = 1, HelpText = "The number of log events per second each task is writing")]
+        [Option('r', "rate", Default = 10, HelpText = "The number of log events per second")]
         public int Rate { get; set; } = 1;
 
         [Option('m', "max-message-size", Default = 10, HelpText = "The maximum size, in KB, of a logged message. Please note that this is a limit of the message size, not the serialized log event size.")]

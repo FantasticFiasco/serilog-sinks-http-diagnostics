@@ -39,11 +39,11 @@ namespace App
 
         private async Task RunAsync()
         {
-            Log.Info("App was started with:");
-            Log.Info($"  Destination:       {options.Destination}");
-            Log.Info($"  Concurrency:       {options.Concurrency} tasks");
-            Log.Info($"  Rate:              {options.Rate} log events/sec/task");
-            Log.Info($"  Max message size:  {options.MaxMessageSize} KB");
+            Log.Info("Start options");
+            Log.Info($"    Destination         {options.Destination}");
+            Log.Info($"    Concurrency         {options.Concurrency} tasks");
+            Log.Info($"    Rate                {options.Rate} log events/sec");
+            Log.Info($"    Max message size    {options.MaxMessageSize} KB");
 
             var serilogErrors = new SerilogErrors();
             serilogErrors.Clear();
@@ -91,7 +91,8 @@ namespace App
 
         private async Task RunTaskAsync(CancellationToken ct)
         {
-            var delayInMs = 1000 / options.Rate;
+            var taskRate = (double) options.Rate / options.Concurrency;
+            var delayInMs = (int)Math.Round(1000 / taskRate);
 
             while (!ct.IsCancellationRequested)
             {

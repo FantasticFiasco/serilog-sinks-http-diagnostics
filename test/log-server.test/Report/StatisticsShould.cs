@@ -29,14 +29,14 @@ namespace LogServer.Report
             statistics.BatchSize.Average.ShouldBe(0.0);
             statistics.BatchSize.Count.ShouldBe(0);
 
-            statistics.BatchesPerMinute.ShouldBeNull();
+            statistics.BatchesPerSecond.ShouldBeNull();
 
             statistics.LogEventSize.Min.ShouldBe(0);
             statistics.LogEventSize.Max.ShouldBe(0);
             statistics.LogEventSize.Average.ShouldBe(0);
             statistics.LogEventSize.Count.ShouldBe(0);
 
-            statistics.LogEventsPerMinute.ShouldBeNull();
+            statistics.LogEventsPerSecond.ShouldBeNull();
         }
 
         [Fact]
@@ -53,26 +53,6 @@ namespace LogServer.Report
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(99)]
-        public void ReturnBatchCount(int batchCount)
-        {
-            // Arrange
-            for (var i = 0; i < batchCount; i++)
-            {
-                statistics.ReportReceivedBatch(1, new int[1]);
-            }
-
-            // Act
-            var got = statistics.BatchSize.Count;
-
-            // Assert
-            got.ShouldBe(batchCount);
-        }
-
-        [Theory]
         [InlineData(0, null, null)]
         [InlineData(1, 0.1, 10)]
         [InlineData(2, 0.1, 20)]
@@ -80,7 +60,7 @@ namespace LogServer.Report
         [InlineData(1, 1, 1)]
         [InlineData(1, 2, 0.5)]
         [InlineData(10, 2, 5)]
-        public void ReturnBatchesPerMinute(int batchCount, double? minutes, double? want)
+        public void ReturnBatchesPerSecond(int batchCount, double? seconds, double? want)
         {
             // Arrange
             var now = new DateTime(2020, 1, 1);
@@ -91,62 +71,16 @@ namespace LogServer.Report
                 statistics.ReportReceivedBatch(1, new int[1]);
             }
 
-            if (minutes != null)
+            if (seconds != null)
             {
-                statistics.Start = now.AddMinutes(-(double)minutes);
+                statistics.Start = now.AddSeconds(-(double)seconds);
             }
 
             // Act
-            var got = statistics.BatchesPerMinute;
+            var got = statistics.BatchesPerSecond;
 
             // Assert
             got.ShouldBe(want);
-        }
-
-        [Theory]
-        [InlineData(1, 1, 1)]
-        [InlineData(1, 10, 10)]
-        [InlineData(2, 10, 20)]
-        [InlineData(4, 5, 20)]
-        public void ReturnLogEventCount(int batchCount, int logEventsPerBatch, int want)
-        {
-            // Arrange
-            for (var i = 0; i < batchCount; i++)
-            {
-                statistics.ReportReceivedBatch(1, new int[logEventsPerBatch]);
-            }
-
-            // Act
-            var got = statistics.LogEventSize.Count;
-
-            // Assert
-            got.ShouldBe(want);
-        }
-
-        [Fact]
-        public void ReturnMinLogEventSize()
-        {
-            // Arrange
-            statistics.ReportReceivedBatch(1, new[] { 27, 11, 99, 25, 78 });
-
-            // Act
-            var got = statistics.LogEventSize.Min;
-
-            // Assert
-            got.ShouldBe(11);
-        }
-
-        [Fact]
-        public void ReturnMaxLogEventSize()
-        {
-            // Arrange
-            statistics.ReportReceivedBatch(1, new[] { 27, 11, 99, 25, 78 });
-
-            // Act
-            var got = statistics.LogEventSize.Max;
-
-            // Assert
-            got.ShouldBe(99);
         }
 
         [Theory]
@@ -157,7 +91,7 @@ namespace LogServer.Report
         [InlineData(1, 1, 1)]
         [InlineData(1, 2, 0.5)]
         [InlineData(10, 2, 5)]
-        public void ReturnLogEventsPerMinute(int logEvents, double? minutes, double? want)
+        public void ReturnLogEventsPerSecond(int logEvents, double? seconds, double? want)
         {
             // Arrange
             var now = new DateTime(2020, 1, 1);
@@ -168,13 +102,13 @@ namespace LogServer.Report
                 statistics.ReportReceivedBatch(1, new int[logEvents]);
             }
 
-            if (minutes != null)
+            if (seconds != null)
             {
-                statistics.Start = now.AddMinutes(-(double)minutes);
+                statistics.Start = now.AddSeconds(-(double)seconds);
             }
 
             // Act
-            var got = statistics.LogEventsPerMinute;
+            var got = statistics.LogEventsPerSecond;
 
             // Assert
             got.ShouldBe(want);
@@ -241,7 +175,7 @@ namespace LogServer.Report
             got.ShouldBe(want);
         }
 
-        private int[] Repeat(int count, int value)
+        private static int[] Repeat(int count, int value)
         {
             return Enumerable
                 .Range(0, count)
