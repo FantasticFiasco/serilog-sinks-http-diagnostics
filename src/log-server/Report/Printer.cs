@@ -51,22 +51,22 @@ namespace LogServer.Report
             var now = clock.Now;
 
             var messageBuilder = new StringBuilder();
-            messageBuilder.AppendLine("Start:                       {0:O}".Format(statistics.Start));
-            messageBuilder.AppendLine("Duration:                    {0}".Format(now.Subtract(statistics.Start ?? now)));
+            messageBuilder.AppendLine("Start                        {0:O}".Format(statistics.Start));
+            messageBuilder.AppendLine("Duration                     {0}".Format(now.Subtract(statistics.Start ?? now)));
             messageBuilder.AppendLine("");
             messageBuilder.AppendLine("Batches");
-            messageBuilder.AppendLine("    count:                   {0}".Format(statistics.BatchSize.Count));
-            messageBuilder.AppendLine("    per minute:              {0:N2}".Format(statistics.BatchesPerMinute));
-            messageBuilder.AppendLine("    size min/avg/max:        {0} / {1} / {2}".Format(
+            messageBuilder.AppendLine("    count                    {0}".Format(statistics.BatchSize.Count));
+            messageBuilder.AppendLine("    per minute               {0:N2}".Format(statistics.BatchesPerMinute));
+            messageBuilder.AppendLine("    size min/avg/max         {0} / {1} / {2}".Format(
                 ByteSize.FriendlyValue(statistics.BatchSize.Min),
                 ByteSize.FriendlyValue(statistics.BatchSize.Average),
                 ByteSize.FriendlyValue(statistics.BatchSize.Max)));
             
             messageBuilder.AppendLine("");
             messageBuilder.AppendLine("Log events");
-            messageBuilder.AppendLine("    count:                   {0}".Format(statistics.LogEventSize.Count));
-            messageBuilder.AppendLine("    per minute:              {0:N2}".Format(statistics.LogEventsPerMinute));
-            messageBuilder.AppendLine("    size min/avg/max:        {0} / {1} / {2}".Format(
+            messageBuilder.AppendLine("    count                    {0}".Format(statistics.LogEventSize.Count));
+            messageBuilder.AppendLine("    per minute               {0:N2}".Format(statistics.LogEventsPerMinute));
+            messageBuilder.AppendLine("    size min/avg/max         {0} / {1} / {2}".Format(
                 ByteSize.FriendlyValue(statistics.LogEventSize.Min),
                 ByteSize.FriendlyValue(statistics.LogEventSize.Average),
                 ByteSize.FriendlyValue(statistics.LogEventSize.Max)));
