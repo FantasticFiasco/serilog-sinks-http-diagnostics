@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,14 +51,14 @@ namespace LogServer.Report
             messageBuilder.AppendLine("");
             messageBuilder.AppendLine("Batches:       {0}".Format(statistics.BatchCount));
             messageBuilder.AppendLine("    /minute:   {0:N2}".Format(statistics.BatchesPerMinute));
-            messageBuilder.AppendLine("    min:       {0:N2} KB".Format((double)statistics.MinBatchSize / ByteSize.KB));
-            messageBuilder.AppendLine("    max:       {0:N2} KB".Format((double)statistics.MaxBatchSize / ByteSize.KB));
-            messageBuilder.AppendLine("    average:   {0:N2} KB".Format(statistics.AverageBatchSize / ByteSize.KB));
+            messageBuilder.AppendLine("    min:       {0}".Format(ByteSize.FriendlyValue(statistics.MinBatchSize)));
+            messageBuilder.AppendLine("    max:       {0}".Format(ByteSize.FriendlyValue(statistics.MaxBatchSize)));
+            messageBuilder.AppendLine("    average:   {0}".Format(ByteSize.FriendlyValue(statistics.AverageBatchSize)));
             messageBuilder.AppendLine("");
             messageBuilder.AppendLine("Log events:    {0}".Format(statistics.LogEventCount));
             messageBuilder.AppendLine("    /minute:   {0:N2}".Format(statistics.LogEventsPerMinute));
-            messageBuilder.AppendLine("    min:       {0:N2} KB".Format((double)statistics.MinLogEventSize / ByteSize.KB));
-            messageBuilder.AppendLine("    max:       {0:N2} KB".Format((double)statistics.MaxLogEventSize / ByteSize.KB));
+            messageBuilder.AppendLine("    min:       {0}".Format(ByteSize.FriendlyValue(statistics.MinLogEventSize)));
+            messageBuilder.AppendLine("    max:       {0}".Format(ByteSize.FriendlyValue(statistics.MaxLogEventSize)));
 
             var rows = new[]
             {

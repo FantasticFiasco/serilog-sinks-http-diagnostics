@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 
 namespace LogServer
@@ -34,5 +35,21 @@ namespace LogServer
         /// <param name="text">The string containing the set of characters to encode.</param>
         /// <returns>The number of bytes produced by encoding the specified characters.</returns>
         public static int From(string text) => Encoding.UTF8.GetByteCount(text);
+
+        public static string FriendlyValue(double byteCount)
+        {
+            var units = new[] { "B", "KB", "MB", "GB" };
+
+            double value = byteCount;
+            var unitIndex = 0;
+
+            while (value > 1024)
+            {
+                value /= 1024;
+                unitIndex++;
+            }
+
+            return $"{Math.Round(value, 2)} {units[unitIndex]}";
+        }
     }
 }
