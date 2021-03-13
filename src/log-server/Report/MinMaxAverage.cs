@@ -37,7 +37,23 @@ namespace LogServer.Report
             {
                 lock (syncRoot)
                 {
+                    if (count == 0)
+                    {
+                        return 0;
+                    }
+
                     return (double)sum / count;
+                }
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                lock (syncRoot)
+                {
+                    return count;
                 }
             }
         }

@@ -28,7 +28,7 @@ namespace LogServer.Controllers
             var got = Json.ParseArray(json);
 
             // Assert
-            got.ShouldBe(new string[] { "{\"a\":1}", "{\"b\":2}", "{\"c\":3}" });
+            got.ShouldBe(new[] { "{\"a\":1}", "{\"b\":2}", "{\"c\":3}" });
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace LogServer.Controllers
             var got = Json.ParseArray(json);
 
             // Assert
-            got.ShouldBe(new string[] { "{\"a\":1}", "{\"b\":2}", "{\"c\":3}" });
+            got.ShouldBe(new[] { "{\"a\":1}", "{\"b\":2}", "{\"c\":3}" });
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace LogServer.Controllers
             var got = Json.ParseArray(json);
 
             // Assert
-            got.ShouldBe(new string[] { "{\"a\":1}", "{\"b\":2}", "{\"c\":3}" });
+            got.ShouldBe(new[] { "{\"a\":1}", "{\"b\":2}", "{\"c\":3}" });
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace LogServer.Controllers
             var got = Json.ParseArray(json);
 
             // Assert
-            got.ShouldBe(new string[] { "{\"a\":1}", "{\"b\":2}", "{\"c\":3}" });
+            got.ShouldBe(new[] { "{\"a\":1}", "{\"b\":2}", "{\"c\":3}" });
         }
     }
 }

@@ -9,10 +9,7 @@ namespace App
 
         private long count;
 
-        public long Count
-        {
-            get { return Interlocked.Read(ref count); }
-        }
+        public long Count => Interlocked.Read(ref count);
 
         public void Clear()
         {
@@ -31,7 +28,7 @@ namespace App
 
         private static void Print(string message)
         {
-            var maxLength = 200;
+            const int maxLength = 200;
 
             if (message.Length > maxLength)
             {

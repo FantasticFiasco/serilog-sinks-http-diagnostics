@@ -23,9 +23,19 @@ namespace LogServer.Report
         {
             // Assert
             statistics.Start.ShouldBeNull();
-            statistics.BatchCount.ShouldBe(0);
+
+            statistics.BatchSize.Min.ShouldBe(0);
+            statistics.BatchSize.Max.ShouldBe(0);
+            statistics.BatchSize.Average.ShouldBe(0.0);
+            statistics.BatchSize.Count.ShouldBe(0);
+
             statistics.BatchesPerMinute.ShouldBeNull();
-            statistics.LogEventCount.ShouldBe(0);
+
+            statistics.LogEventSize.Min.ShouldBe(0);
+            statistics.LogEventSize.Max.ShouldBe(0);
+            statistics.LogEventSize.Average.ShouldBe(0);
+            statistics.LogEventSize.Count.ShouldBe(0);
+
             statistics.LogEventsPerMinute.ShouldBeNull();
         }
 
@@ -56,7 +66,7 @@ namespace LogServer.Report
             }
 
             // Act
-            var got = statistics.BatchCount;
+            var got = statistics.BatchSize.Count;
 
             // Assert
             got.ShouldBe(batchCount);
@@ -107,7 +117,7 @@ namespace LogServer.Report
             }
 
             // Act
-            var got = statistics.LogEventCount;
+            var got = statistics.LogEventSize.Count;
 
             // Assert
             got.ShouldBe(want);
@@ -117,10 +127,10 @@ namespace LogServer.Report
         public void ReturnMinLogEventSize()
         {
             // Arrange
-            statistics.ReportReceivedBatch(1, new int[] { 27, 11, 99, 25, 78 });
+            statistics.ReportReceivedBatch(1, new[] { 27, 11, 99, 25, 78 });
 
             // Act
-            var got = statistics.MinLogEventSize;
+            var got = statistics.LogEventSize.Min;
 
             // Assert
             got.ShouldBe(11);
@@ -130,10 +140,10 @@ namespace LogServer.Report
         public void ReturnMaxLogEventSize()
         {
             // Arrange
-            statistics.ReportReceivedBatch(1, new int[] { 27, 11, 99, 25, 78 });
+            statistics.ReportReceivedBatch(1, new[] { 27, 11, 99, 25, 78 });
 
             // Act
-            var got = statistics.MaxLogEventSize;
+            var got = statistics.LogEventSize.Max;
 
             // Assert
             got.ShouldBe(99);
