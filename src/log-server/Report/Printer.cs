@@ -51,19 +51,25 @@ namespace LogServer.Report
             var now = clock.Now;
 
             var messageBuilder = new StringBuilder();
-            messageBuilder.AppendLine("Start:         {0:O}".Format(statistics.Start));
-            messageBuilder.AppendLine("Duration:      {0}".Format(statistics.Start != null ? now.Subtract((DateTime)statistics.Start) : ""));
+            messageBuilder.AppendLine("Start:                       {0:O}".Format(statistics.Start));
+            messageBuilder.AppendLine("Duration:                    {0}".Format(now.Subtract(statistics.Start ?? now)));
             messageBuilder.AppendLine("");
-            messageBuilder.AppendLine("Batches:       {0}".Format(statistics.BatchSize.Count));
-            messageBuilder.AppendLine("    /minute:   {0:N2}".Format(statistics.BatchesPerMinute));
-            messageBuilder.AppendLine("    min:       {0}".Format(ByteSize.FriendlyValue(statistics.BatchSize.Min)));
-            messageBuilder.AppendLine("    max:       {0}".Format(ByteSize.FriendlyValue(statistics.BatchSize.Max)));
-            messageBuilder.AppendLine("    average:   {0}".Format(ByteSize.FriendlyValue(statistics.BatchSize.Average)));
+            messageBuilder.AppendLine("Batches");
+            messageBuilder.AppendLine("    count:                   {0}".Format(statistics.BatchSize.Count));
+            messageBuilder.AppendLine("    per minute:              {0:N2}".Format(statistics.BatchesPerMinute));
+            messageBuilder.AppendLine("    size min/avg/max:        {0} / {1} / {2}".Format(
+                ByteSize.FriendlyValue(statistics.BatchSize.Min),
+                ByteSize.FriendlyValue(statistics.BatchSize.Average),
+                ByteSize.FriendlyValue(statistics.BatchSize.Max)));
+            
             messageBuilder.AppendLine("");
-            messageBuilder.AppendLine("Log events:    {0}".Format(statistics.LogEventSize.Count));
-            messageBuilder.AppendLine("    /minute:   {0:N2}".Format(statistics.LogEventsPerMinute));
-            messageBuilder.AppendLine("    min:       {0}".Format(ByteSize.FriendlyValue(statistics.LogEventSize.Min)));
-            messageBuilder.AppendLine("    max:       {0}".Format(ByteSize.FriendlyValue(statistics.LogEventSize.Max)));
+            messageBuilder.AppendLine("Log events");
+            messageBuilder.AppendLine("    count:                   {0}".Format(statistics.LogEventSize.Count));
+            messageBuilder.AppendLine("    per minute:              {0:N2}".Format(statistics.LogEventsPerMinute));
+            messageBuilder.AppendLine("    size min/avg/max:        {0} / {1} / {2}".Format(
+                ByteSize.FriendlyValue(statistics.LogEventSize.Min),
+                ByteSize.FriendlyValue(statistics.LogEventSize.Average),
+                ByteSize.FriendlyValue(statistics.LogEventSize.Max)));
 
             var rows = new[]
             {
@@ -82,14 +88,14 @@ namespace LogServer.Report
             messageBuilder.AppendLine("");
             messageBuilder.AppendLine("Distribution:");
 
-            foreach (var row in rows)
+            foreach (var (template, nbrOfLogEvents) in rows)
             {
-                messageBuilder.AppendLine(row.Template.Format(row.NbrOfLogEvents, new string('#', (int)Math.Round(40.0 * row.NbrOfLogEvents / statistics.LogEventSize.Count))));
+                messageBuilder.AppendLine(template.Format(nbrOfLogEvents, new string('#', (int)Math.Round(40.0 * nbrOfLogEvents / statistics.LogEventSize.Count))));
             }
             logger.LogInformation(messageBuilder.ToString());
         }
 
-        record DistributionRow(string Template, int NbrOfLogEvents);
+        private record DistributionRow(string Template, int NbrOfLogEvents);
     }
 }
 
