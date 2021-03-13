@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Threading;
 
@@ -6,14 +5,11 @@ namespace App
 {
     public class SerilogErrors
     {
-        private const string FileName = "errors.txt";
+        private const string FileName = "app.error.txt";
 
         private long count;
 
-        public long Count
-        {
-            get { return Interlocked.Read(ref count); }
-        }
+        public long Count => Interlocked.Read(ref count);
 
         public void Clear()
         {
@@ -32,7 +28,7 @@ namespace App
 
         private static void Print(string message)
         {
-            var maxLength = 200;
+            const int maxLength = 200;
 
             if (message.Length > maxLength)
             {

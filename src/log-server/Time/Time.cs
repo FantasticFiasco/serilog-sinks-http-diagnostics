@@ -4,9 +4,6 @@ namespace LogServer.Time
 {
     public class Clock
     {
-        public virtual DateTime Now
-        {
-            get { return DateTime.Now; }
-        }
+        public virtual DateTime Now => DateTime.Now;
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,11 +39,11 @@ namespace App
 
         private async Task RunAsync()
         {
-            Log.Info("App was started with:");
-            Log.Info($"  Destination:       {options.Destination}");
-            Log.Info($"  Concurrency:       {options.Concurrency} tasks");
-            Log.Info($"  Rate:              {options.Rate} log events/sec/task");
-            Log.Info($"  Max message size:  {options.MaxMessageSize} KB");
+            Log.Info("Start options");
+            Log.Info($"    Destination         {options.Destination}");
+            Log.Info($"    Concurrency         {options.Concurrency} tasks");
+            Log.Info($"    Rate                {options.Rate} log events/sec");
+            Log.Info($"    Max message size    {options.MaxMessageSize} KB");
 
             var serilogErrors = new SerilogErrors();
             serilogErrors.Clear();
@@ -81,26 +81,33 @@ namespace App
             }
         }
 
-        private Task[] RunTasksAsync(CancellationToken token)
+        private Task[] RunTasksAsync(CancellationToken ct)
         {
             return Enumerable
                 .Range(1, options.Concurrency)
-                .Select(id => RunTaskAsync(id, token))
+                .Select(_ => RunTaskAsync(ct))
                 .ToArray();
         }
 
-        private async Task RunTaskAsync(int id, CancellationToken token)
+        private async Task RunTaskAsync(CancellationToken ct)
         {
-            var delayInMs = 1000 / options.Rate;
+            var taskRate = (double) options.Rate / options.Concurrency;
+            var delayInMs = (int)Math.Round(1000 / taskRate);
 
-            while (!token.IsCancellationRequested)
+            while (!ct.IsCancellationRequested)
             {
                 var size = (int)Math.Round(options.MaxMessageSize * ByteSize.KB * random.NextDouble());
                 var message = new string('*', size);
 
                 logger.Information(message);
 
-                await Task.Delay(delayInMs);
+                try
+                {
+                    await Task.Delay(delayInMs, ct);
+                }
+                catch (TaskCanceledException)
+                {
+                }
             }
         }
 

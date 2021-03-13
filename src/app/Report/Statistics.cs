@@ -8,10 +8,7 @@ namespace App.Report
     {
         private long logEventCount;
 
-        public long LogEventCount
-        {
-            get { return Interlocked.Read(ref logEventCount); }
-        }
+        public long LogEventCount => Interlocked.Read(ref logEventCount);
 
         public void Emit(LogEvent logEvent)
         {

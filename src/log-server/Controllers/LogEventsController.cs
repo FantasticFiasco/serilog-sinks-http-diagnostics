@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Text;
 using LogServer.Report;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,11 +18,11 @@ namespace LogServer.Controllers
         [HttpPost]
         public void Post([FromBody] string logEventBatch)
         {
-            int batchSize = UTF8Encoding.UTF8.GetByteCount(logEventBatch);
+            int batchSize = ByteSize.From(logEventBatch);
 
             var logEventSizes = Json
                 .ParseArray(logEventBatch)
-                .Select(logEvent => UTF8Encoding.UTF8.GetByteCount(logEvent))
+                .Select(logEvent => ByteSize.From(logEvent))
                 .ToArray();
 
             statistics.ReportReceivedBatch(batchSize, logEventSizes);
