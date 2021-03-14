@@ -14,7 +14,7 @@ The applications in the repository have been built to fulfil two use-cases.
 
 ### Use-case 1: Provide insights into the characteristics of your logging pattern
 
-Do you know at which rate your application is producing log events? Do you know the average size of the log event? Are you sure that the buffer files won't overflow during peak load?
+Do you know at which rate your application is producing log events? Do you know the average size of a log event? Are you sure that the buffer files won't overflow during peak load?
 
 The HTTP sink can be configured in many ways, but if you are unaware of the logging behavior of your application you have a higher risk of using a configuration that doesn't suit your application. Get to know your application. Let your application send its log events to the log server and get insights into the logging characteristics of your application. Make sure you don't lose those log events during peak load.
 
