@@ -91,8 +91,13 @@ namespace App
 
         private async Task RunTaskAsync(CancellationToken ct)
         {
-            var taskRate = (double) options.Rate / options.Concurrency;
+            var taskRate = (double)options.Rate / options.Concurrency;
             var delayInMs = (int)Math.Round(1000 / taskRate);
+
+            // Do an initial randomized delay, preventing all tasks from writing log events
+            // at the exact same time
+            var initialDelay = (int)Math.Round(random.NextDouble() * delayInMs);
+            await Delay(initialDelay, ct);
 
             while (!ct.IsCancellationRequested)
             {
@@ -101,13 +106,18 @@ namespace App
 
                 logger.Information(message);
 
-                try
-                {
-                    await Task.Delay(delayInMs, ct);
-                }
-                catch (TaskCanceledException)
-                {
-                }
+                await Delay(delayInMs, ct);
+            }
+        }
+
+        private async Task Delay(int delayInMs, CancellationToken ct)
+        {
+            try
+            {
+                await Task.Delay(delayInMs, ct);
+            }
+            catch (TaskCanceledException)
+            {
             }
         }
 
