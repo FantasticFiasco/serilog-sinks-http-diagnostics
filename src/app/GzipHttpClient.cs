@@ -1,3 +1,5 @@
+using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -18,9 +20,19 @@ namespace App
         {
         }
 
-        public Task<HttpResponseMessage> PostAsync(string requestUri, HttpContent content)
+        // TODO: Stream content instead of holding everything in memory
+        public async Task<HttpResponseMessage> PostAsync(string requestUri, HttpContent content)
         {
-            return httpClient.PostAsync(requestUri, content);
+            var contentPayload = await content.ReadAsByteArrayAsync();
+
+            await using var compressedContentPayload = new MemoryStream();
+            await using var compressedStream = new GZipStream(compressedContentPayload, CompressionMode.Compress);
+            await compressedStream.WriteAsync(contentPayload, 0, contentPayload.Length);
+
+            var compressedContent = new ByteArrayContent(compressedContentPayload.ToArray());
+
+            var response = await httpClient.PostAsync(requestUri, compressedContent);
+            return response;
         }
 
         public void Dispose()
