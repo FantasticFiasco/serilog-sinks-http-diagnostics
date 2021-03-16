@@ -31,7 +31,8 @@ namespace App
                 .WriteTo.Sink(_statistics)
                 .WriteTo.Http(
                     requestUri: options.Destination,
-                    batchFormatter: new ArrayBatchFormatter(null))
+                    batchFormatter: new ArrayBatchFormatter(null),
+                    httpClient: new GzipHttpClient())
                 .CreateLogger();
         }
 
