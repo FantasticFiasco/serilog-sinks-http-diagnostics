@@ -46,6 +46,8 @@ namespace LogServer
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseMiddleware<GzipRequestMiddleware>();
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {

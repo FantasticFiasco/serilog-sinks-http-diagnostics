@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using App.Report;
@@ -32,7 +33,8 @@ namespace App
                 .WriteTo.Http(
                     requestUri: options.Destination,
                     batchFormatter: new ArrayBatchFormatter(null),
-                    httpClient: new GzipHttpClient())
+                    httpClient: new GzipHttpClient()
+                    )
                 .CreateLogger();
         }
 

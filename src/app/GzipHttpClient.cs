@@ -1,7 +1,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Serilog.Sinks.Http;
@@ -24,13 +24,16 @@ namespace App
         // TODO: Stream content instead of holding everything in memory
         public async Task<HttpResponseMessage> PostAsync(string requestUri, HttpContent content)
         {
-            var contentPayload = await content.ReadAsByteArrayAsync();
+            await using var input = new MemoryStream(await content.ReadAsByteArrayAsync());
 
-            await using var compressedContentPayload = new MemoryStream();
-            await using var compressedStream = new GZipStream(compressedContentPayload, CompressionMode.Compress);
-            await compressedStream.WriteAsync(contentPayload, 0, contentPayload.Length);
+            await using var output = new MemoryStream();
+            await using (var gzipStream = new GZipStream(output, CompressionLevel.Optimal))
+            {
+                await input.CopyToAsync(gzipStream);
+            }
 
-            var compressedContent = new ByteArrayContent(compressedContentPayload.ToArray());
+            await using var contentStream = new MemoryStream(output.ToArray());
+            var compressedContent = new StreamContent(contentStream);
             compressedContent.Headers.Add("Content-Type", "application/json");
             compressedContent.Headers.Add("Content-Encoding", "gzip");
 

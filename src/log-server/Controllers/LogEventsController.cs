@@ -1,6 +1,10 @@
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using LogServer.Report;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace LogServer.Controllers
 {
