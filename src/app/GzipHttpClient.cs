@@ -1,6 +1,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Serilog.Sinks.Http;
@@ -30,6 +31,8 @@ namespace App
             await compressedStream.WriteAsync(contentPayload, 0, contentPayload.Length);
 
             var compressedContent = new ByteArrayContent(compressedContentPayload.ToArray());
+            compressedContent.Headers.Add("Content-Type", "application/json");
+            compressedContent.Headers.Add("Content-Encoding", "gzip");
 
             var response = await httpClient.PostAsync(requestUri, compressedContent);
             return response;
