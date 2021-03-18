@@ -104,7 +104,6 @@ namespace App
             while (!ct.IsCancellationRequested)
             {
                 var size = random.Next(1, maxMessageSizeBytes + 1);
-
                 var message = new string('*', size);
 
                 logger.Information(message);
