@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -93,6 +94,7 @@ namespace App
 
             var taskRate = (double)options.Rate / options.Concurrency;
             var delayInMs = (int)Math.Round(1000 / taskRate);
+            var maxMessageSizeBytes = options.MaxMessageSize * (int)ByteSize.KB;
 
             // Do an initial randomized delay, preventing all tasks from writing log events
             // at the exact same time
@@ -101,7 +103,8 @@ namespace App
 
             while (!ct.IsCancellationRequested)
             {
-                var size = random.Next(1, options.MaxMessageSize * (int)ByteSize.KB + 1);
+                var size = random.Next(1, maxMessageSizeBytes + 1);
+
                 var message = new string('*', size);
 
                 logger.Information(message);
