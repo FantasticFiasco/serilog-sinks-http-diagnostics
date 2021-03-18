@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using LogServer.Report;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +8,11 @@ namespace LogServer.Controllers
     [Route("")]
     public class LogEventsController : ControllerBase
     {
-        private readonly Statistics statistics;
+        private readonly Statistics _statistics;
 
         public LogEventsController(Statistics statistics)
         {
-            this.statistics = statistics;
+            _statistics = statistics;
         }
 
         [HttpPost]
@@ -25,7 +25,7 @@ namespace LogServer.Controllers
                 .Select(logEvent => ByteSize.From(logEvent))
                 .ToArray();
 
-            statistics.ReportReceivedBatch(batchSize, logEventSizes);
+            _statistics.ReportReceivedBatch(batchSize, logEventSizes);
         }
     }
 }

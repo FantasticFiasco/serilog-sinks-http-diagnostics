@@ -6,13 +6,13 @@ namespace App.Report
 {
     public class Statistics : ILogEventSink
     {
-        private long logEventCount;
+        private long _logEventCount;
 
-        public long LogEventCount => Interlocked.Read(ref logEventCount);
+        public long LogEventCount => Interlocked.Read(ref _logEventCount);
 
         public void Emit(LogEvent logEvent)
         {
-            Interlocked.Increment(ref logEventCount);
+            Interlocked.Increment(ref _logEventCount);
         }
     }
 }

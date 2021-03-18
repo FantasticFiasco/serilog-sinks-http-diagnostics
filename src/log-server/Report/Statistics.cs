@@ -6,17 +6,17 @@ namespace LogServer.Report
 {
     public class Statistics
     {
-        private readonly Clock clock;
-        private readonly ConcurrentDictionary<LogEventSize, int> logEventDistribution;
+        private readonly Clock _clock;
+        private readonly ConcurrentDictionary<LogEventSize, int> _logEventDistribution;
 
         public Statistics(Clock clock)
         {
-            this.clock = clock;
+            _clock = clock;
 
             BatchSize = new MinMaxAverage();
             LogEventsPerBatch = new MinMaxAverage();
             LogEventSize = new MinMaxAverage();
-            logEventDistribution = new ConcurrentDictionary<LogEventSize, int>();
+            _logEventDistribution = new ConcurrentDictionary<LogEventSize, int>();
         }
 
         public DateTime? Start { get; set; }
@@ -55,7 +55,7 @@ namespace LogServer.Report
         {
             if (Start == null)
             {
-                Start = clock.Now;
+                Start = _clock.Now;
             }
 
             BatchSize.Update(batchSize);
@@ -66,13 +66,13 @@ namespace LogServer.Report
                 LogEventSize.Update(logEventSize);
 
                 var size = LogEventSizeConverter.From(logEventSize);
-                logEventDistribution.AddOrUpdate(size, 1, (key, oldValue) => oldValue + 1);
+                _logEventDistribution.AddOrUpdate(size, 1, (key, oldValue) => oldValue + 1);
             }
         }
 
         public int LogEventsOfSize(LogEventSize size)
         {
-            var success = logEventDistribution.TryGetValue(size, out var count);
+            var success = _logEventDistribution.TryGetValue(size, out var count);
             return success ? count : 0;
         }
 
@@ -81,7 +81,7 @@ namespace LogServer.Report
             var start = Start;
 
             return start != null
-                ? clock.Now.Subtract((DateTime)start)
+                ? _clock.Now.Subtract((DateTime)start)
                 : null;
         }
     }

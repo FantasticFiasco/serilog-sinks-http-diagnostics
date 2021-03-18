@@ -16,17 +16,17 @@ namespace LogServer
         /// <summary>
         /// Value representing 1 kilobyte (KB), or kibibyte (KiB) as the unit sometimes is called.
         /// </summary>
-        public const int KB = 1024 * B;
+        public const int Kb = 1024 * B;
 
         /// <summary>
         /// Value representing 1 megabyte (MB), or mebibyte (MiB) as the unit sometimes is called.
         /// </summary>
-        public const int MB = 1024 * KB;
+        public const int Mb = 1024 * Kb;
 
         /// <summary>
         /// Value representing 1 gigabyte (GB), or gibibyte (GiB) as the unit sometimes is called.
         /// </summary>
-        public const int GB = 1024 * MB;
+        public const int Gb = 1024 * Mb;
 
         /// <summary>
         /// Returns the number of bytes produced by UTF8 encoding the characters in the specified

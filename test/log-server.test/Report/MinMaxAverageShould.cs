@@ -5,11 +5,11 @@ namespace LogServer.Report
 {
     public class MinMaxAverageShould
     {
-        private readonly MinMaxAverage minMaxAverage;
+        private readonly MinMaxAverage _minMaxAverage;
 
         public MinMaxAverageShould()
         {
-            minMaxAverage = new MinMaxAverage();
+            _minMaxAverage = new MinMaxAverage();
         }
 
         [Theory]
@@ -25,12 +25,12 @@ namespace LogServer.Report
         public void ReturnMin(int newValue1, int newValue2, int newValue3, int want)
         {
             // Arrange
-            minMaxAverage.Update(newValue1);
-            minMaxAverage.Update(newValue2);
-            minMaxAverage.Update(newValue3);
+            _minMaxAverage.Update(newValue1);
+            _minMaxAverage.Update(newValue2);
+            _minMaxAverage.Update(newValue3);
 
             // Act
-            var got = minMaxAverage.Min;
+            var got = _minMaxAverage.Min;
 
             // Assert
             got.ShouldBe(want);
@@ -49,12 +49,12 @@ namespace LogServer.Report
         public void ReturnMax(int newValue1, int newValue2, int newValue3, int want)
         {
             // Arrange
-            minMaxAverage.Update(newValue1);
-            minMaxAverage.Update(newValue2);
-            minMaxAverage.Update(newValue3);
+            _minMaxAverage.Update(newValue1);
+            _minMaxAverage.Update(newValue2);
+            _minMaxAverage.Update(newValue3);
 
             // Act
-            var got = minMaxAverage.Max;
+            var got = _minMaxAverage.Max;
 
             // Assert
             got.ShouldBe(want);
@@ -73,12 +73,12 @@ namespace LogServer.Report
         public void ReturnAverage(int newValue1, int newValue2, int newValue3, int want)
         {
             // Arrange
-            minMaxAverage.Update(newValue1);
-            minMaxAverage.Update(newValue2);
-            minMaxAverage.Update(newValue3);
+            _minMaxAverage.Update(newValue1);
+            _minMaxAverage.Update(newValue2);
+            _minMaxAverage.Update(newValue3);
 
             // Act
-            var got = minMaxAverage.Average;
+            var got = _minMaxAverage.Average;
 
             // Assert
             got.ShouldBe(want);

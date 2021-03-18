@@ -2,20 +2,20 @@ namespace LogServer.Report
 {
     public class MinMaxAverage
     {
-        private readonly object syncRoot = new();
+        private readonly object _syncRoot = new();
 
-        private int? min;
-        private int? max;
-        private int count;
-        private int sum;
+        private int? _min;
+        private int? _max;
+        private int _count;
+        private int _sum;
 
         public int Min
         {
             get
             {
-                lock (syncRoot)
+                lock (_syncRoot)
                 {
-                    return min ?? 0;
+                    return _min ?? 0;
                 }
             }
         }
@@ -24,9 +24,9 @@ namespace LogServer.Report
         {
             get
             {
-                lock (syncRoot)
+                lock (_syncRoot)
                 {
-                    return max ?? 0;
+                    return _max ?? 0;
                 }
             }
         }
@@ -35,14 +35,14 @@ namespace LogServer.Report
         {
             get
             {
-                lock (syncRoot)
+                lock (_syncRoot)
                 {
-                    if (count == 0)
+                    if (_count == 0)
                     {
                         return 0;
                     }
 
-                    return (double)sum / count;
+                    return (double)_sum / _count;
                 }
             }
         }
@@ -51,29 +51,29 @@ namespace LogServer.Report
         {
             get
             {
-                lock (syncRoot)
+                lock (_syncRoot)
                 {
-                    return count;
+                    return _count;
                 }
             }
         }
 
         public void Update(int newValue)
         {
-            lock (syncRoot)
+            lock (_syncRoot)
             {
-                if (min == null || newValue < min)
+                if (_min == null || newValue < _min)
                 {
-                    min = newValue;
+                    _min = newValue;
                 }
 
-                if (max == null || newValue > max)
+                if (_max == null || newValue > _max)
                 {
-                    max = newValue;
+                    _max = newValue;
                 }
 
-                count++;
-                sum += newValue;
+                _count++;
+                _sum += newValue;
             }
         }
     }
