@@ -116,15 +116,15 @@ namespace LogServer.Report
 
         [Theory]
         [InlineData(LogEventSize.Below512B, 2 * 1)]
-        [InlineData(LogEventSize.Between512BAnd1Kb, 2 * 2)]
-        [InlineData(LogEventSize.Between1And5Kb, 2 * 3)]
-        [InlineData(LogEventSize.Between5And10Kb, 2 * 4)]
-        [InlineData(LogEventSize.Between10And50Kb, 2 * 5)]
-        [InlineData(LogEventSize.Between50And100Kb, 2 * 6)]
-        [InlineData(LogEventSize.Between100And512Kb, 2 * 7)]
-        [InlineData(LogEventSize.Between512KbAnd1Mb, 2 * 8)]
-        [InlineData(LogEventSize.Between1And5Mb, 2 * 9)]
-        [InlineData(LogEventSize.EqualToAndAbove5Mb, 2 * 10)]
+        [InlineData(LogEventSize.Between512BAnd1KB, 2 * 2)]
+        [InlineData(LogEventSize.Between1And5KB, 2 * 3)]
+        [InlineData(LogEventSize.Between5And10KB, 2 * 4)]
+        [InlineData(LogEventSize.Between10And50KB, 2 * 5)]
+        [InlineData(LogEventSize.Between50And100KB, 2 * 6)]
+        [InlineData(LogEventSize.Between100And512KB, 2 * 7)]
+        [InlineData(LogEventSize.Between512KBAnd1MB, 2 * 8)]
+        [InlineData(LogEventSize.Between1And5MB, 2 * 9)]
+        [InlineData(LogEventSize.EqualToAndAbove5MB, 2 * 10)]
         public void ReturnLogEventsOfSize(LogEventSize size, int want)
         {
             // Arrange
