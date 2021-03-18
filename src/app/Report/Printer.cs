@@ -5,32 +5,32 @@ namespace App.Report
 {
     public class Printer : IDisposable
     {
-        private readonly Statistics statistics;
-        private readonly SerilogErrors serilogErrors;
-        private readonly Func<AppState> appStateProvider;
+        private readonly Statistics _statistics;
+        private readonly SerilogErrors _serilogErrors;
+        private readonly Func<AppState> _appStateProvider;
 
-        private Timer? timer;
+        private Timer? _timer;
 
         public Printer(Statistics statistics, SerilogErrors serilogErrors, Func<AppState> appStateProvider)
         {
-            this.statistics = statistics;
-            this.serilogErrors = serilogErrors;
-            this.appStateProvider = appStateProvider;
+            _statistics = statistics;
+            _serilogErrors = serilogErrors;
+            _appStateProvider = appStateProvider;
         }
 
         public void Start()
         {
-            timer = new Timer(OnTick, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(10));
+            _timer = new Timer(OnTick, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(10));
         }
 
         public void Print()
         {
-            Log.Info(string.Format(MessageFormat(), statistics.LogEventCount, serilogErrors.Count));
+            Log.Info(string.Format(MessageFormat(), _statistics.LogEventCount, _serilogErrors.Count));
         }
 
         public void Dispose()
         {
-            timer?.Dispose();
+            _timer?.Dispose();
         }
 
         private void OnTick(object? state)
@@ -40,7 +40,7 @@ namespace App.Report
 
         private string MessageFormat()
         {
-            var appState = appStateProvider();
+            var appState = _appStateProvider();
             switch (appState)
             {
                 case AppState.Running:

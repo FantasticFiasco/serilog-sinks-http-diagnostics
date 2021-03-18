@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,13 +10,13 @@ using Serilog.Sinks.Http.BatchFormatters;
 
 namespace App
 {
-    class Program
+    internal class Program
     {
-        private readonly Options options;
-        private readonly Statistics statistics;
-        private readonly ILogger logger;
+        private readonly Options _options;
+        private readonly Statistics _statistics;
+        private readonly ILogger _logger;
 
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             await Parser.Default.ParseArguments<Options>(args)
                .WithParsedAsync(options => new Program(options).RunAsync());
@@ -25,11 +24,11 @@ namespace App
 
         private Program(Options options)
         {
-            this.options = options;
+            _options = options;
 
-            statistics = new Statistics();
-            logger = new LoggerConfiguration()
-                .WriteTo.Sink(statistics)
+            _statistics = new Statistics();
+            _logger = new LoggerConfiguration()
+                .WriteTo.Sink(_statistics)
                 .WriteTo.Http(
                     requestUri: options.Destination,
                     batchFormatter: new ArrayBatchFormatter(null))
@@ -39,10 +38,10 @@ namespace App
         private async Task RunAsync()
         {
             Log.Info("Start options");
-            Log.Info($"    Destination         {options.Destination}");
-            Log.Info($"    Concurrency         {options.Concurrency} tasks");
-            Log.Info($"    Rate                {options.Rate} log events/sec");
-            Log.Info($"    Max message size    {options.MaxMessageSize} KB");
+            Log.Info($"    Destination         {_options.Destination}");
+            Log.Info($"    Concurrency         {_options.Concurrency} tasks");
+            Log.Info($"    Rate                {_options.Rate} log events/sec");
+            Log.Info($"    Max message size    {_options.MaxMessageSize} KB");
 
             var serilogErrors = new SerilogErrors();
             serilogErrors.Clear();
@@ -50,7 +49,7 @@ namespace App
 
             var appState = AppState.None;
 
-            var printer = new Printer(statistics, serilogErrors, () => appState);
+            var printer = new Printer(_statistics, serilogErrors, () => appState);
             printer.Start();
 
             CancellationTokenSource? cts = null;
@@ -83,7 +82,7 @@ namespace App
         private Task[] RunTasksAsync(CancellationToken ct)
         {
             return Enumerable
-                .Range(1, options.Concurrency)
+                .Range(1, _options.Concurrency)
                 .Select(id => RunTaskAsync(id, ct))
                 .ToArray();
         }
@@ -92,9 +91,9 @@ namespace App
         {
             var random = new Random(id);
 
-            var taskRate = (double)options.Rate / options.Concurrency;
+            var taskRate = (double)_options.Rate / _options.Concurrency;
             var delayInMs = (int)Math.Round(1000 / taskRate);
-            var maxMessageSizeBytes = options.MaxMessageSize * (int)ByteSize.KB;
+            var maxMessageSizeBytes = _options.MaxMessageSize * (int)ByteSize.KB;
 
             // Do an initial randomized delay, preventing all tasks from writing log events
             // at the exact same time
@@ -106,13 +105,13 @@ namespace App
                 var size = random.Next(1, maxMessageSizeBytes + 1);
                 var message = new string('*', size);
 
-                logger.Information(message);
+                _logger.Information(message);
 
                 await Delay(delayInMs, ct);
             }
         }
 
-        private async Task Delay(int delayInMs, CancellationToken ct)
+        private static async Task Delay(int delayInMs, CancellationToken ct)
         {
             try
             {
@@ -123,7 +122,7 @@ namespace App
             }
         }
 
-        private AppState NextAppState(AppState current)
+        private static AppState NextAppState(AppState current)
         {
             switch (current)
             {

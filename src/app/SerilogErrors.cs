@@ -7,20 +7,20 @@ namespace App
     {
         private const string FileName = "app.error.txt";
 
-        private long count;
+        private long _count;
 
-        public long Count => Interlocked.Read(ref count);
+        public long Count => Interlocked.Read(ref _count);
 
         public void Clear()
         {
-            Interlocked.Exchange(ref count, 0);
+            Interlocked.Exchange(ref _count, 0);
 
             File.Delete(FileName);
         }
 
         public void Add(string message)
         {
-            Interlocked.Increment(ref count);
+            Interlocked.Increment(ref _count);
 
             Print(message);
             AppendToFile(message);
