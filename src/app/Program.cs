@@ -14,7 +14,6 @@ namespace App
     {
         private readonly Options options;
         private readonly Statistics statistics;
-        private readonly Random random;
         private readonly ILogger logger;
 
         static async Task Main(string[] args)
@@ -28,7 +27,6 @@ namespace App
             this.options = options;
 
             statistics = new Statistics();
-            random = new Random();
             logger = new LoggerConfiguration()
                 .WriteTo.Sink(statistics)
                 .WriteTo.Http(
@@ -85,23 +83,25 @@ namespace App
         {
             return Enumerable
                 .Range(1, options.Concurrency)
-                .Select(_ => RunTaskAsync(ct))
+                .Select(id => RunTaskAsync(id, ct))
                 .ToArray();
         }
 
-        private async Task RunTaskAsync(CancellationToken ct)
+        private async Task RunTaskAsync(int id, CancellationToken ct)
         {
+            var random = new Random(id);
+
             var taskRate = (double)options.Rate / options.Concurrency;
             var delayInMs = (int)Math.Round(1000 / taskRate);
 
             // Do an initial randomized delay, preventing all tasks from writing log events
             // at the exact same time
-            var initialDelay = (int)Math.Round(random.NextDouble() * delayInMs);
+            var initialDelay = random.Next(0, delayInMs);
             await Delay(initialDelay, ct);
 
             while (!ct.IsCancellationRequested)
             {
-                var size = (int)Math.Round(options.MaxMessageSize * ByteSize.KB * random.NextDouble());
+                var size = random.Next(1, options.MaxMessageSize * (int)ByteSize.KB + 1);
                 var message = new string('*', size);
 
                 logger.Information(message);
