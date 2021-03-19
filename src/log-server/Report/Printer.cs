@@ -55,12 +55,12 @@ namespace LogServer.Report
             messageBuilder.AppendLine("duration                       {0}".Format(now.Subtract(_statistics.Start ?? now)));
             messageBuilder.AppendLine("");
             messageBuilder.AppendLine("batches");
-            messageBuilder.AppendLine("    count                      {0}".Format(_statistics.BatchSize.Count));
+            messageBuilder.AppendLine("    count                      {0}".Format(_statistics.ContentLength.Count));
             messageBuilder.AppendLine("    per second                 {0:N2}".Format(_statistics.BatchesPerSecond));
             messageBuilder.AppendLine("    size (min/avg/max)         {0} / {1} / {2}".Format(
-                ByteSize.FriendlyValue(_statistics.BatchSize.Min),
-                ByteSize.FriendlyValue(_statistics.BatchSize.Average),
-                ByteSize.FriendlyValue(_statistics.BatchSize.Max)));
+                ByteSize.FriendlyValue(_statistics.ContentLength.Min),
+                ByteSize.FriendlyValue(_statistics.ContentLength.Average),
+                ByteSize.FriendlyValue(_statistics.ContentLength.Max)));
             
             messageBuilder.AppendLine("");
             messageBuilder.AppendLine("log events");

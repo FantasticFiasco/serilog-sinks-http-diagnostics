@@ -5,8 +5,9 @@ namespace LogServer.Middleware
 {
     public class ContentMiddleware
     {
-        public const string ContentLength = "Content-Length";
+        public const string ContentType = "Content-Type";
         public const string ContentEncoding = "Content-Encoding";
+        public const string ContentLength = "Content-Length";
 
         private readonly RequestDelegate _next;
 
@@ -17,8 +18,9 @@ namespace LogServer.Middleware
 
         public Task InvokeAsync(HttpContext context)
         {
-            context.Items[ContentLength] = context.Request.Headers[ContentLength];
+            context.Items[ContentType] = context.Request.Headers[ContentType];
             context.Items[ContentEncoding] = context.Request.Headers[ContentEncoding];
+            context.Items[ContentLength] = context.Request.Headers[ContentLength];
 
             return _next(context);
         }

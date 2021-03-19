@@ -9,6 +9,8 @@ namespace LogServer.Report
 {
     public class StatisticsShould
     {
+        private const string ContentType = "application/json";
+
         private readonly Mock<Clock> _clock;
         private readonly Statistics _statistics;
 
@@ -24,10 +26,10 @@ namespace LogServer.Report
             // Assert
             _statistics.Start.ShouldBeNull();
 
-            _statistics.BatchSize.Min.ShouldBe(0);
-            _statistics.BatchSize.Max.ShouldBe(0);
-            _statistics.BatchSize.Average.ShouldBe(0.0);
-            _statistics.BatchSize.Count.ShouldBe(0);
+            _statistics.ContentLength.Min.ShouldBe(0);
+            _statistics.ContentLength.Max.ShouldBe(0);
+            _statistics.ContentLength.Average.ShouldBe(0.0);
+            _statistics.ContentLength.Count.ShouldBe(0);
 
             _statistics.BatchesPerSecond.ShouldBeNull();
 
@@ -43,7 +45,7 @@ namespace LogServer.Report
         public void ReturnStart()
         {
             // Arrange
-            _statistics.ReportReceivedBatch(1, new int[1]);
+            _statistics.ReportReceivedBatch(ContentType, "", 1, new int[1]);
 
             // Act
             var got = _statistics.Start;
@@ -68,7 +70,7 @@ namespace LogServer.Report
 
             for (var i = 0; i < batchCount; i++)
             {
-                _statistics.ReportReceivedBatch(1, new int[1]);
+                _statistics.ReportReceivedBatch(ContentType, "", 1, new int[1]);
             }
 
             if (seconds != null)
@@ -99,7 +101,7 @@ namespace LogServer.Report
 
             if (logEvents > 0)
             {
-                _statistics.ReportReceivedBatch(1, new int[logEvents]);
+                _statistics.ReportReceivedBatch(ContentType, "", 1, new int[logEvents]);
             }
 
             if (seconds != null)
@@ -129,44 +131,44 @@ namespace LogServer.Report
         {
             // Arrange
             // Below512B
-            _statistics.ReportReceivedBatch(1, Repeat(1, 1 * ByteSize.B));
-            _statistics.ReportReceivedBatch(1, Repeat(1, 512 * ByteSize.B - 1));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(1, 1 * ByteSize.B));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(1, 512 * ByteSize.B - 1));
 
             // Between512BAnd1KB
-            _statistics.ReportReceivedBatch(1, Repeat(2, 512 * ByteSize.B));
-            _statistics.ReportReceivedBatch(1, Repeat(2, 1 * ByteSize.KB - 1));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(2, 512 * ByteSize.B));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(2, 1 * ByteSize.KB - 1));
 
             // Between1And5KB
-            _statistics.ReportReceivedBatch(1, Repeat(3, 1 * ByteSize.KB));
-            _statistics.ReportReceivedBatch(1, Repeat(3, 5 * ByteSize.KB - 1));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(3, 1 * ByteSize.KB));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(3, 5 * ByteSize.KB - 1));
 
             // Between5And10KB
-            _statistics.ReportReceivedBatch(1, Repeat(4, 5 * ByteSize.KB));
-            _statistics.ReportReceivedBatch(1, Repeat(4, 10 * ByteSize.KB - 1));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(4, 5 * ByteSize.KB));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(4, 10 * ByteSize.KB - 1));
 
             // Between10And50KB
-            _statistics.ReportReceivedBatch(1, Repeat(5, 10 * ByteSize.KB));
-            _statistics.ReportReceivedBatch(1, Repeat(5, 50 * ByteSize.KB - 1));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(5, 10 * ByteSize.KB));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(5, 50 * ByteSize.KB - 1));
 
             // Between50And100KB
-            _statistics.ReportReceivedBatch(1, Repeat(6, 50 * ByteSize.KB));
-            _statistics.ReportReceivedBatch(1, Repeat(6, 100 * ByteSize.KB - 1));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(6, 50 * ByteSize.KB));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(6, 100 * ByteSize.KB - 1));
 
             // Between100And512KB
-            _statistics.ReportReceivedBatch(1, Repeat(7, 100 * ByteSize.KB));
-            _statistics.ReportReceivedBatch(1, Repeat(7, 512 * ByteSize.KB - 1));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(7, 100 * ByteSize.KB));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(7, 512 * ByteSize.KB - 1));
 
             // Between512KBAnd1MB
-            _statistics.ReportReceivedBatch(1, Repeat(8, 512 * ByteSize.KB));
-            _statistics.ReportReceivedBatch(1, Repeat(8, 1 * ByteSize.MB - 1));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(8, 512 * ByteSize.KB));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(8, 1 * ByteSize.MB - 1));
 
             // Between1And5MB
-            _statistics.ReportReceivedBatch(1, Repeat(9, 1 * ByteSize.MB));
-            _statistics.ReportReceivedBatch(1, Repeat(9, 5 * ByteSize.MB - 1));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(9, 1 * ByteSize.MB));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(9, 5 * ByteSize.MB - 1));
 
             // EqualToAndAbove5MB
-            _statistics.ReportReceivedBatch(1, Repeat(10, 5 * ByteSize.MB));
-            _statistics.ReportReceivedBatch(1, Repeat(10, 10 * ByteSize.MB));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(10, 5 * ByteSize.MB));
+            _statistics.ReportReceivedBatch(ContentType, "", 1, Repeat(10, 10 * ByteSize.MB));
 
             // Act
             var got = _statistics.LogEventsOfSize(size);
