@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using App.HttpClients;
 using App.Report;
 using CommandLine;
 using Serilog;

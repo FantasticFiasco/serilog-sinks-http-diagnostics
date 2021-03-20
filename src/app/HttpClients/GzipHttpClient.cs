@@ -1,20 +1,19 @@
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Serilog.Sinks.Http;
 
-namespace App
+namespace App.HttpClients
 {
     public class GzipHttpClient : IHttpClient
     {
-        private readonly HttpClient httpClient;
+        private readonly HttpClient _httpClient;
 
         public GzipHttpClient()
         {
-            httpClient = new HttpClient();
+            _httpClient = new HttpClient();
         }
 
         public void Configure(IConfiguration configuration)
@@ -37,13 +36,13 @@ namespace App
             compressedContent.Headers.Add("Content-Type", "application/json");
             compressedContent.Headers.Add("Content-Encoding", "gzip");
 
-            var response = await httpClient.PostAsync(requestUri, compressedContent);
+            var response = await _httpClient.PostAsync(requestUri, compressedContent);
             return response;
         }
 
         public void Dispose()
         {
-            httpClient?.Dispose();
+            _httpClient?.Dispose();
         }
     }
 }

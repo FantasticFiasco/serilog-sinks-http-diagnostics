@@ -11,16 +11,16 @@ namespace LogServer
 {
     public class GzipRequestMiddleware
     {
-        private readonly RequestDelegate next;
+        private readonly RequestDelegate _next;
         private const string ContentEncodingHeader = "Content-Encoding";
         private const string ContentEncodingGzip = "gzip";
         private const string ContentEncodingDeflate = "deflate";
-        private readonly ILogger<GzipRequestMiddleware> logger;
+        private readonly ILogger<GzipRequestMiddleware> _logger;
 
         public GzipRequestMiddleware(RequestDelegate next, ILogger<GzipRequestMiddleware> logger)
         {
-            this.next = next ?? throw new ArgumentNullException(nameof(next));
-            this.logger = logger;
+            this._next = next ?? throw new ArgumentNullException(nameof(next));
+            this._logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -33,7 +33,7 @@ namespace LogServer
                 var decompressor = contentEncoding == ContentEncodingGzip ? new GZipStream(context.Request.Body, CompressionMode.Decompress, true) : (Stream)new DeflateStream(context.Request.Body, CompressionMode.Decompress, true);
                 context.Request.Body = decompressor;
             }
-            await next(context);
+            await _next(context);
         }
     }
 }
