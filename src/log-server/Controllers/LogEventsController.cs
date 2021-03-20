@@ -20,14 +20,15 @@ namespace LogServer.Controllers
         {
             var contentType = Request.Headers["Content-Type"].FirstOrDefault() ?? "";
             var contentEncoding = Request.Headers["Content-Encoding"].FirstOrDefault() ?? "";
-            var contentLength = int.Parse(Request.Headers["Content-Length"].First());
+
+            var batchSize = ByteSize.From(logEventBatch);
 
             var logEventSizes = Json
                 .ParseArray(logEventBatch)
                 .Select(ByteSize.From)
                 .ToArray();
 
-            _statistics.ReportReceivedBatch(contentType, contentEncoding, contentLength, logEventSizes);
+            _statistics.ReportReceivedBatch(contentType, contentEncoding, batchSize, logEventSizes);
         }
     }
 }

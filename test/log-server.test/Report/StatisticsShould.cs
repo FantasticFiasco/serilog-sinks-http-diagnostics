@@ -26,10 +26,10 @@ namespace LogServer.Report
             // Assert
             _statistics.Start.ShouldBeNull();
 
-            _statistics.ContentLength.Min.ShouldBe(0);
-            _statistics.ContentLength.Max.ShouldBe(0);
-            _statistics.ContentLength.Average.ShouldBe(0.0);
-            _statistics.ContentLength.Count.ShouldBe(0);
+            _statistics.BatchSize.Min.ShouldBe(0);
+            _statistics.BatchSize.Max.ShouldBe(0);
+            _statistics.BatchSize.Average.ShouldBe(0.0);
+            _statistics.BatchSize.Count.ShouldBe(0);
 
             _statistics.BatchesPerSecond.ShouldBeNull();
 
