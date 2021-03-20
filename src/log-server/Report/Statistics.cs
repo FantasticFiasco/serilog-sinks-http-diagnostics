@@ -21,9 +21,9 @@ namespace LogServer.Report
 
         public DateTime? Start { get; set; }
 
-        public string ContentType { get; private set; }
+        public string? ContentType { get; private set; }
 
-        public string ContentEncoding { get; private set; }
+        public string? ContentEncoding { get; private set; }
 
         public MinMaxAverage BatchSize { get; }
 
