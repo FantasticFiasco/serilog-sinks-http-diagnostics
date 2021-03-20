@@ -34,7 +34,8 @@ namespace LogServer
                     })
                 .AddControllers(configure =>
                     {
-                        configure.InputFormatters.Insert(0, new RawJsonBodyInputFormatter());
+                        configure.InputFormatters.Clear();
+                        configure.InputFormatters.Add(new RawJsonBodyInputFormatter());
                     });
         }
 

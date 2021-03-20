@@ -18,14 +18,17 @@ namespace LogServer.Controllers
         [HttpPost]
         public void Post([FromBody] string logEventBatch)
         {
-            int batchSize = ByteSize.From(logEventBatch);
+            var contentType = Request.Headers["Content-Type"].FirstOrDefault() ?? "";
+            var contentEncoding = Request.Headers["Content-Encoding"].FirstOrDefault() ?? "";
+
+            var batchSize = ByteSize.From(logEventBatch);
 
             var logEventSizes = Json
                 .ParseArray(logEventBatch)
-                .Select(logEvent => ByteSize.From(logEvent))
+                .Select(ByteSize.From)
                 .ToArray();
 
-            _statistics.ReportReceivedBatch(batchSize, logEventSizes);
+            _statistics.ReportReceivedBatch(contentType, contentEncoding, batchSize, logEventSizes);
         }
     }
 }

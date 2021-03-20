@@ -21,6 +21,10 @@ namespace LogServer.Report
 
         public DateTime? Start { get; set; }
 
+        public string? ContentType { get; private set; }
+
+        public string? ContentEncoding { get; private set; }
+
         public MinMaxAverage BatchSize { get; }
 
         public double? BatchesPerSecond
@@ -50,13 +54,15 @@ namespace LogServer.Report
                     : null;
             }
         }
-
-        public void ReportReceivedBatch(int batchSize, int[] logEventSizes)
+        public void ReportReceivedBatch(string contentType, string contentEncoding, int batchSize, int[] logEventSizes)
         {
             if (Start == null)
             {
                 Start = _clock.Now;
             }
+
+            ContentType = contentType;
+            ContentEncoding = contentEncoding;
 
             BatchSize.Update(batchSize);
             LogEventsPerBatch.Update(logEventSizes.Length);
