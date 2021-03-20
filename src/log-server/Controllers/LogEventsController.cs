@@ -19,9 +19,9 @@ namespace LogServer.Controllers
         [HttpPost]
         public void Post([FromBody] string logEventBatch)
         {
-            var contentType = (string)HttpContext.Items[ContentMiddleware.ContentType]!;
-            var contentEncoding = (string)HttpContext.Items[ContentMiddleware.ContentEncoding]!;
-            var contentLength = (int)HttpContext.Items[ContentMiddleware.ContentLength]!;
+            var contentType = Request.Headers["Content-Type"].FirstOrDefault() ?? "";
+            var contentEncoding = Request.Headers["Content-Encoding"].FirstOrDefault() ?? "";
+            var contentLength = int.Parse(Request.Headers["Content-Length"].First());
 
             var logEventSizes = Json
                 .ParseArray(logEventBatch)

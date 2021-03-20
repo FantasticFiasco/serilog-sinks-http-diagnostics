@@ -47,8 +47,6 @@ namespace LogServer
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMiddleware<ContentMiddleware>();
-
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
