@@ -1,5 +1,4 @@
 using System.Linq;
-using LogServer.Middleware;
 using LogServer.Report;
 using Microsoft.AspNetCore.Mvc;
 
