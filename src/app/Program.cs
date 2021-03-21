@@ -8,6 +8,7 @@ using CommandLine;
 using Serilog;
 using Serilog.Sinks.Http;
 using Serilog.Sinks.Http.BatchFormatters;
+using Serilog.Sinks.Http.Private.Http;
 
 namespace App
 {
@@ -38,7 +39,7 @@ namespace App
                 .WriteTo.Http(
                     requestUri: options.Destination,
                     batchFormatter: new ArrayBatchFormatter(null),
-                    httpClient: new GzipHttpClient()
+                    httpClient: ResolveHttpClient(options.Compression)
                     )
                 .CreateLogger();
         }
@@ -153,6 +154,16 @@ namespace App
             }
 
             return NextAppState(current);
+        }
+
+        private static IHttpClient ResolveHttpClient(Compression compression)
+        {
+            switch (compression)
+            {
+                case Compression.None: return new DefaultHttpClient();
+                case Compression.Gzip: return new GzipHttpClient();
+                default: throw new NotImplementedException();
+            }
         }
     }
 }
