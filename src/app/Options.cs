@@ -1,4 +1,3 @@
-using System.Runtime.Serialization;
 using CommandLine;
 
 namespace App
@@ -17,7 +16,7 @@ namespace App
         [Option("max-message-size", Default = 10, HelpText = "The maximum size, in KB, of a logged message. Please note that this is a limit of the message size, not the serialized log event size.")]
         public int MaxMessageSize { get; set; } = 10;
 
-        [Option("compression", Default = Compression.None, HelpText = "The request compression method")]
+        [Option("compression", Default = Compression.None, HelpText = "The request compression method [None, Gzip]")]
         public Compression Compression { get; set; } = Compression.None;
     }
 

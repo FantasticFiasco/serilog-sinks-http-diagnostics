@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using App.HttpClients;
 using App.Report;
 using CommandLine;
-using CommandLine.Text;
 using Serilog;
 using Serilog.Sinks.Http;
 using Serilog.Sinks.Http.BatchFormatters;
@@ -20,7 +19,11 @@ namespace App
 
         private static async Task Main(string[] args)
         {
-            var parser = new Parser(options => options.CaseInsensitiveEnumValues = true);
+            var parser = new Parser(settings =>
+            {
+                settings.CaseInsensitiveEnumValues = true;
+                settings.HelpWriter = Console.Error;
+            });
             await parser.ParseArguments<Options>(args)
                .WithParsedAsync(options => new Program(options).RunAsync());
         }
