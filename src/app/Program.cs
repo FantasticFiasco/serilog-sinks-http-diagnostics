@@ -158,12 +158,12 @@ namespace App
 
         private static IHttpClient ResolveHttpClient(Compression compression)
         {
-            switch (compression)
+            return compression switch
             {
-                case Compression.None: return new DefaultHttpClient();
-                case Compression.Gzip: return new GzipHttpClient();
-                default: throw new NotImplementedException();
-            }
+                Compression.None => new DefaultHttpClient(),
+                Compression.Gzip => new GzipHttpClient(),
+                _ => throw new NotImplementedException()
+            };
         }
     }
 }
