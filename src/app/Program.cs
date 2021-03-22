@@ -39,8 +39,7 @@ namespace App
                 .WriteTo.Http(
                     requestUri: options.Destination,
                     batchFormatter: new ArrayBatchFormatter(null),
-                    httpClient: ResolveHttpClient(options.Compression)
-                    )
+                    httpClient: ResolveHttpClient(options.Compression))
                 .CreateLogger();
         }
 
@@ -51,6 +50,7 @@ namespace App
             Log.Info($"    Concurrency         {_options.Concurrency} tasks");
             Log.Info($"    Rate                {_options.Rate} log events/sec");
             Log.Info($"    Max message size    {_options.MaxMessageSize} KB");
+            Log.Info($"    Compression         {_options.Compression}");
 
             var serilogErrors = new SerilogErrors();
             serilogErrors.Clear();
