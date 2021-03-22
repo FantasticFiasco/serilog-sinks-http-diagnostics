@@ -42,6 +42,8 @@ namespace LogServer.Report
 
         public MinMaxAverage BatchSize { get; }
 
+        public double CompressionRatio => BatchSize.Average / ContentLength.Average;
+
         public MinMaxAverage LogEventsPerBatch { get; }
 
         public MinMaxAverage LogEventSize { get; }
