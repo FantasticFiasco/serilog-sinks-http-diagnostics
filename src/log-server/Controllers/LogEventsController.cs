@@ -18,8 +18,9 @@ namespace LogServer.Controllers
         [HttpPost]
         public void Post([FromBody] string logEventBatch)
         {
-            var contentType = Request.Headers["Content-Type"].FirstOrDefault() ?? "";
+            var contentType = Request.ContentType;
             var contentEncoding = Request.Headers["Content-Encoding"].FirstOrDefault() ?? "";
+            var contentLength = (int)Request.ContentLength;
 
             var batchSize = ByteSize.From(logEventBatch);
 
@@ -28,7 +29,7 @@ namespace LogServer.Controllers
                 .Select(ByteSize.From)
                 .ToArray();
 
-            _statistics.ReportReceivedBatch(contentType, contentEncoding, batchSize, logEventSizes);
+            _statistics.ReportReceivedBatch(contentType, contentEncoding, contentLength, batchSize, logEventSizes);
         }
     }
 }

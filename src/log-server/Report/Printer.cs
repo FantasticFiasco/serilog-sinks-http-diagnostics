@@ -55,12 +55,12 @@ namespace LogServer.Report
             messageBuilder.AppendLine("duration                       {0}".Format(now.Subtract(_statistics.Start ?? now)));
             messageBuilder.AppendLine("");
             messageBuilder.AppendLine("requests");
+            messageBuilder.AppendLine("    count                      {0}".Format(_statistics.ContentLength.Count));
+            messageBuilder.AppendLine("    per second                 {0:N2}".Format(_statistics.RequestsPerSecond));
             messageBuilder.AppendLine("    content-type               {0}".Format(_statistics.ContentType));
             messageBuilder.AppendLine("    content-encoding           {0}".Format(_statistics.ContentEncoding));
             messageBuilder.AppendLine("");
             messageBuilder.AppendLine("log event batches");
-            messageBuilder.AppendLine("    count                      {0}".Format(_statistics.BatchSize.Count));
-            messageBuilder.AppendLine("    per second                 {0:N2}".Format(_statistics.BatchesPerSecond));
             messageBuilder.AppendLine("    size (min/avg/max)         {0} / {1} / {2}".Format(
                 ByteSize.FriendlyValue(_statistics.BatchSize.Min),
                 ByteSize.FriendlyValue(_statistics.BatchSize.Average),
@@ -81,16 +81,16 @@ namespace LogServer.Report
 
             var rows = new[]
             {
-                new DistributionRow("              size < 512 B  {0,9} |{1}", _statistics.LogEventsOfSize(LogEventSize.Below512B)),
-                new DistributionRow("    512 B  <= size < 1 KB   {0,9} |{1}", _statistics.LogEventsOfSize(LogEventSize.Between512BAnd1KB)),
-                new DistributionRow("    1K B   <= size < 5 KB   {0,9} |{1}", _statistics.LogEventsOfSize(LogEventSize.Between1And5KB)),
-                new DistributionRow("    5K B   <= size < 10 KB  {0,9} |{1}", _statistics.LogEventsOfSize(LogEventSize.Between5And10KB)),
-                new DistributionRow("    10K B  <= size < 50 KB  {0,9} |{1}", _statistics.LogEventsOfSize(LogEventSize.Between10And50KB)),
-                new DistributionRow("    50K B  <= size < 100 KB {0,9} |{1}", _statistics.LogEventsOfSize(LogEventSize.Between50And100KB)),
-                new DistributionRow("    100 KB <= size < 512 KB {0,9} |{1}", _statistics.LogEventsOfSize(LogEventSize.Between100And512KB)),
-                new DistributionRow("    512 KB <= size < 1 MB   {0,9} |{1}", _statistics.LogEventsOfSize(LogEventSize.Between512KBAnd1MB)),
-                new DistributionRow("    1 MB   <= size < 5 MB   {0,9} |{1}", _statistics.LogEventsOfSize(LogEventSize.Between1And5MB)),
-                new DistributionRow("    5 MB   <= size          {0,9} |{1}", _statistics.LogEventsOfSize(LogEventSize.EqualToAndAbove5MB)),
+                new DistributionRow("              size < 512 B  {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Below512B)),
+                new DistributionRow("    512 B  <= size < 1 KB   {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between512BAnd1KB)),
+                new DistributionRow("    1K B   <= size < 5 KB   {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between1And5KB)),
+                new DistributionRow("    5K B   <= size < 10 KB  {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between5And10KB)),
+                new DistributionRow("    10K B  <= size < 50 KB  {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between10And50KB)),
+                new DistributionRow("    50K B  <= size < 100 KB {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between50And100KB)),
+                new DistributionRow("    100 KB <= size < 512 KB {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between100And512KB)),
+                new DistributionRow("    512 KB <= size < 1 MB   {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between512KBAnd1MB)),
+                new DistributionRow("    1 MB   <= size < 5 MB   {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between1And5MB)),
+                new DistributionRow("    5 MB   <= size          {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.EqualToAndAbove5MB)),
             };
 
             messageBuilder.AppendLine("");

@@ -7,16 +7,17 @@ namespace LogServer.Report
     public class Statistics
     {
         private readonly Clock _clock;
-        private readonly ConcurrentDictionary<LogEventSize, int> _logEventDistribution;
+        private readonly ConcurrentDictionary<SizeBucket, int> _logEventDistribution;
 
         public Statistics(Clock clock)
         {
             _clock = clock;
 
+            ContentLength = new MinMaxAverage();
             BatchSize = new MinMaxAverage();
             LogEventsPerBatch = new MinMaxAverage();
             LogEventSize = new MinMaxAverage();
-            _logEventDistribution = new ConcurrentDictionary<LogEventSize, int>();
+            _logEventDistribution = new ConcurrentDictionary<SizeBucket, int>();
         }
 
         public DateTime? Start { get; set; }
@@ -25,19 +26,21 @@ namespace LogServer.Report
 
         public string? ContentEncoding { get; private set; }
 
-        public MinMaxAverage BatchSize { get; }
+        public MinMaxAverage ContentLength { get; }
 
-        public double? BatchesPerSecond
+        public double? RequestsPerSecond
         {
             get
             {
                 var duration = Duration();
 
                 return duration != null
-                    ? 1000.0 * BatchSize.Count / ((TimeSpan)duration).TotalMilliseconds
+                    ? ContentLength.Count / ((TimeSpan)duration).TotalSeconds
                     : null;
             }
         }
+
+        public MinMaxAverage BatchSize { get; }
 
         public MinMaxAverage LogEventsPerBatch { get; }
 
@@ -50,35 +53,45 @@ namespace LogServer.Report
                 var duration = Duration();
 
                 return duration != null
-                    ? 1000.0 * LogEventSize.Count / ((TimeSpan)duration).TotalMilliseconds
+                    ? LogEventSize.Count / ((TimeSpan)duration).TotalSeconds
                     : null;
             }
         }
-        public void ReportReceivedBatch(string contentType, string contentEncoding, int batchSize, int[] logEventSizes)
+        public void ReportReceivedBatch(
+            string contentType,
+            string contentEncoding,
+            int contentLength,
+            int batchSize,
+            int[] logEventSizes)
         {
             if (Start == null)
             {
                 Start = _clock.Now;
             }
 
+            // Request
             ContentType = contentType;
             ContentEncoding = contentEncoding;
+            ContentLength.Update(contentLength);
 
+            // Batch
             BatchSize.Update(batchSize);
+
+            // Log events
             LogEventsPerBatch.Update(logEventSizes.Length);
 
             foreach (var logEventSize in logEventSizes)
             {
                 LogEventSize.Update(logEventSize);
 
-                var size = LogEventSizeConverter.From(logEventSize);
-                _logEventDistribution.AddOrUpdate(size, 1, (key, oldValue) => oldValue + 1);
+                var sizeBucket = SizeBucketConverter.From(logEventSize);
+                _logEventDistribution.AddOrUpdate(sizeBucket, 1, (key, oldValue) => oldValue + 1);
             }
         }
 
-        public int LogEventsOfSize(LogEventSize size)
+        public int LogEventsOfSize(SizeBucket sizeBucket)
         {
-            var success = _logEventDistribution.TryGetValue(size, out var count);
+            var success = _logEventDistribution.TryGetValue(sizeBucket, out var count);
             return success ? count : 0;
         }
 
