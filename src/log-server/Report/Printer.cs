@@ -59,15 +59,20 @@ namespace LogServer.Report
             messageBuilder.AppendTabbedFormatted("content-encoding                   {0}", _statistics.ContentEncoding);
             messageBuilder.AppendTabbedFormatted("count                              {0}", _statistics.ContentLength.Count);
             messageBuilder.AppendTabbedFormatted("per second                         {0:N2}", _statistics.RequestsPerSecond);
-            messageBuilder.AppendTabbedFormatted("compressed size (min/avg/max)      {0} / {1} / {2}",
-                ByteSize.FriendlyValue(_statistics.ContentLength.Min),
-                ByteSize.FriendlyValue(_statistics.ContentLength.Average),
-                ByteSize.FriendlyValue(_statistics.ContentLength.Max));
-            messageBuilder.AppendTabbedFormatted("uncompressed size (min/avg/max)    {0} / {1} / {2}",
+            messageBuilder.AppendTabbedFormatted("size uncompressed (min/avg/max)    {0} / {1} / {2}",
                 ByteSize.FriendlyValue(_statistics.BatchSize.Min),
                 ByteSize.FriendlyValue(_statistics.BatchSize.Average),
                 ByteSize.FriendlyValue(_statistics.BatchSize.Max));
-            messageBuilder.AppendTabbedFormatted("compression ratio                  {0:N2}", _statistics.CompressionRatio);
+
+            if (_statistics.ContentEncoding != null)
+            {
+                messageBuilder.AppendTabbedFormatted("size compressed (min/avg/max)      {0} / {1} / {2}",
+                    ByteSize.FriendlyValue(_statistics.ContentLength.Min),
+                    ByteSize.FriendlyValue(_statistics.ContentLength.Average),
+                    ByteSize.FriendlyValue(_statistics.ContentLength.Max));
+                messageBuilder.AppendTabbedFormatted("compression ratio                  {0:N2}", _statistics.CompressionRatio);
+            }
+
             messageBuilder.AppendNewLine();
             messageBuilder.AppendLine("log events");
             messageBuilder.AppendTabbedFormatted("count                              {0}", _statistics.LogEventSize.Count);
@@ -83,24 +88,25 @@ namespace LogServer.Report
 
             var rows = new[]
             {
-                new DistributionRow("                                                 size < 512 B  {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Below512B)),
-                new DistributionRow("                                       512 B  <= size < 1 KB   {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between512BAnd1KB)),
-                new DistributionRow("                                       1K B   <= size < 5 KB   {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between1And5KB)),
-                new DistributionRow("                                       5K B   <= size < 10 KB  {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between5And10KB)),
-                new DistributionRow("                                       10K B  <= size < 50 KB  {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between10And50KB)),
-                new DistributionRow("                                       50K B  <= size < 100 KB {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between50And100KB)),
-                new DistributionRow("                                       100 KB <= size < 512 KB {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between100And512KB)),
-                new DistributionRow("                                       512 KB <= size < 1 MB   {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between512KBAnd1MB)),
-                new DistributionRow("                                       1 MB   <= size < 5 MB   {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between1And5MB)),
-                new DistributionRow("                                       5 MB   <= size          {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.EqualToAndAbove5MB)),
+                new DistributionRow("                                             size < 512 B  {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Below512B)),
+                new DistributionRow("                                   512 B  <= size < 1 KB   {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between512BAnd1KB)),
+                new DistributionRow("                                   1K B   <= size < 5 KB   {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between1And5KB)),
+                new DistributionRow("                                   5K B   <= size < 10 KB  {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between5And10KB)),
+                new DistributionRow("                                   10K B  <= size < 50 KB  {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between10And50KB)),
+                new DistributionRow("                                   50K B  <= size < 100 KB {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between50And100KB)),
+                new DistributionRow("                                   100 KB <= size < 512 KB {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between100And512KB)),
+                new DistributionRow("                                   512 KB <= size < 1 MB   {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between512KBAnd1MB)),
+                new DistributionRow("                                   1 MB   <= size < 5 MB   {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between1And5MB)),
+                new DistributionRow("                                   5 MB   <= size          {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.EqualToAndAbove5MB)),
             };
 
             messageBuilder.AppendTabbedFormatted("distribution");
 
             foreach (var (template, nbrOfLogEvents) in rows)
             {
-                messageBuilder.AppendLine(template.Format(nbrOfLogEvents, new string('#', (int)Math.Round(40.0 * nbrOfLogEvents / _statistics.LogEventSize.Count))));
+                messageBuilder.AppendTabbedFormatted(template, nbrOfLogEvents, new string('#', (int)Math.Round(40.0 * nbrOfLogEvents / _statistics.LogEventSize.Count)));
             }
+
             _logger.LogInformation(messageBuilder.ToString());
         }
 
