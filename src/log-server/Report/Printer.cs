@@ -73,6 +73,28 @@ namespace LogServer.Report
                 messageBuilder.AppendTabbedFormatted("compression ratio                  {0:N2}", _statistics.CompressionRatio);
             }
 
+            var rows = new[]
+            {
+                new DistributionRow("                                             size < 512 B  {0,9} |{1}", _statistics.BatchesOfSize(SizeBucket.Below512B)),
+                new DistributionRow("                                   512 B  <= size < 1 KB   {0,9} |{1}", _statistics.BatchesOfSize(SizeBucket.Between512BAnd1KB)),
+                new DistributionRow("                                   1K B   <= size < 5 KB   {0,9} |{1}", _statistics.BatchesOfSize(SizeBucket.Between1And5KB)),
+                new DistributionRow("                                   5K B   <= size < 10 KB  {0,9} |{1}", _statistics.BatchesOfSize(SizeBucket.Between5And10KB)),
+                new DistributionRow("                                   10K B  <= size < 50 KB  {0,9} |{1}", _statistics.BatchesOfSize(SizeBucket.Between10And50KB)),
+                new DistributionRow("                                   50K B  <= size < 100 KB {0,9} |{1}", _statistics.BatchesOfSize(SizeBucket.Between50And100KB)),
+                new DistributionRow("                                   100 KB <= size < 512 KB {0,9} |{1}", _statistics.BatchesOfSize(SizeBucket.Between100And512KB)),
+                new DistributionRow("                                   512 KB <= size < 1 MB   {0,9} |{1}", _statistics.BatchesOfSize(SizeBucket.Between512KBAnd1MB)),
+                new DistributionRow("                                   1 MB   <= size < 5 MB   {0,9} |{1}", _statistics.BatchesOfSize(SizeBucket.Between1And5MB)),
+                new DistributionRow("                                   5 MB   <= size          {0,9} |{1}", _statistics.BatchesOfSize(SizeBucket.EqualToAndAbove5MB)),
+            };
+
+            messageBuilder.AppendTabbedFormatted("distribution");
+            foreach (var (template, nbrOfBatches) in rows)
+            {
+                messageBuilder.AppendTabbedFormatted(template, nbrOfBatches, new string('#', (int)Math.Round(20.0 * nbrOfBatches / _statistics.BatchSize.Count)));
+            }
+
+            _logger.LogInformation(messageBuilder.ToString());
+
             messageBuilder.AppendNewLine();
             messageBuilder.AppendLine("log events");
             messageBuilder.AppendTabbedFormatted("count                              {0}", _statistics.LogEventSize.Count);
@@ -86,7 +108,7 @@ namespace LogServer.Report
                 _statistics.LogEventsPerBatch.Average,
                 _statistics.LogEventsPerBatch.Max);
 
-            var rows = new[]
+            rows = new[]
             {
                 new DistributionRow("                                             size < 512 B  {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Below512B)),
                 new DistributionRow("                                   512 B  <= size < 1 KB   {0,9} |{1}", _statistics.LogEventsOfSize(SizeBucket.Between512BAnd1KB)),

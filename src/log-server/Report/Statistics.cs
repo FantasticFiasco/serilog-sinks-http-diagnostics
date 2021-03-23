@@ -7,6 +7,7 @@ namespace LogServer.Report
     public class Statistics
     {
         private readonly Clock _clock;
+        private readonly ConcurrentDictionary<SizeBucket, int> _batchDistribution;
         private readonly ConcurrentDictionary<SizeBucket, int> _logEventDistribution;
 
         public Statistics(Clock clock)
@@ -17,6 +18,7 @@ namespace LogServer.Report
             BatchSize = new MinMaxAverage();
             LogEventsPerBatch = new MinMaxAverage();
             LogEventSize = new MinMaxAverage();
+            _batchDistribution = new ConcurrentDictionary<SizeBucket, int>();
             _logEventDistribution = new ConcurrentDictionary<SizeBucket, int>();
         }
 
@@ -78,6 +80,10 @@ namespace LogServer.Report
 
             // Batch
             BatchSize.Update(batchSize);
+            _batchDistribution.AddOrUpdate(
+                SizeBucketConverter.From(batchSize),
+                1,
+                (key, oldValue) => oldValue + 1);
 
             // Log events
             LogEventsPerBatch.Update(logEventSizes.Length);
@@ -89,6 +95,12 @@ namespace LogServer.Report
                 var sizeBucket = SizeBucketConverter.From(logEventSize);
                 _logEventDistribution.AddOrUpdate(sizeBucket, 1, (key, oldValue) => oldValue + 1);
             }
+        }
+
+        public int BatchesOfSize(SizeBucket sizeBucket)
+        {
+            var success = _batchDistribution.TryGetValue(sizeBucket, out var count);
+            return success ? count : 0;
         }
 
         public int LogEventsOfSize(SizeBucket sizeBucket)
