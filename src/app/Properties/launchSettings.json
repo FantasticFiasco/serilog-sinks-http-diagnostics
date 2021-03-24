@@ -1,8 +1,7 @@
 {
   "profiles": {
     "app": {
-      "commandName": "Project",
-      "commandLineArgs": "--compression gzip"
+      "commandName": "Project"
     }
   }
 }
