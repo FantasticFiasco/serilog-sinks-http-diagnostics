@@ -1,3 +1,5 @@
+using LogServer.InputFormatters;
+using LogServer.Middleware;
 using LogServer.Report;
 using LogServer.Time;
 using Microsoft.AspNetCore.Builder;
@@ -45,6 +47,8 @@ namespace LogServer
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware<GzipRequestMiddleware>();
 
             app.UseRouting();
             app.UseEndpoints(endpoints =>

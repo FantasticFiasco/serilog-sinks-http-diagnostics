@@ -1,6 +1,6 @@
 namespace LogServer.Report
 {
-    public enum LogEventSize
+    public enum SizeBucket
     {
         Below512B,
         Between512BAnd1KB,

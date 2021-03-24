@@ -2,11 +2,13 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using App.HttpClients;
 using App.Report;
 using CommandLine;
 using Serilog;
 using Serilog.Sinks.Http;
 using Serilog.Sinks.Http.BatchFormatters;
+using Serilog.Sinks.Http.Private.Http;
 
 namespace App
 {
@@ -18,7 +20,12 @@ namespace App
 
         private static async Task Main(string[] args)
         {
-            await Parser.Default.ParseArguments<Options>(args)
+            var parser = new Parser(settings =>
+            {
+                settings.CaseInsensitiveEnumValues = true;
+                settings.HelpWriter = Console.Error;
+            });
+            await parser.ParseArguments<Options>(args)
                .WithParsedAsync(options => new Program(options).RunAsync());
         }
 
@@ -31,7 +38,8 @@ namespace App
                 .WriteTo.Sink(_statistics)
                 .WriteTo.Http(
                     requestUri: options.Destination,
-                    batchFormatter: new ArrayBatchFormatter(null))
+                    batchFormatter: new ArrayBatchFormatter(null),
+                    httpClient: ResolveHttpClient(options.Compression))
                 .CreateLogger();
         }
 
@@ -42,6 +50,7 @@ namespace App
             Log.Info($"    Concurrency         {_options.Concurrency} tasks");
             Log.Info($"    Rate                {_options.Rate} log events/sec");
             Log.Info($"    Max message size    {_options.MaxMessageSize} KB");
+            Log.Info($"    Compression         {_options.Compression}");
 
             var serilogErrors = new SerilogErrors();
             serilogErrors.Clear();
@@ -145,6 +154,16 @@ namespace App
             }
 
             return NextAppState(current);
+        }
+
+        private static IHttpClient ResolveHttpClient(Compression compression)
+        {
+            return compression switch
+            {
+                Compression.None => new DefaultHttpClient(),
+                Compression.Gzip => new GzipHttpClient(),
+                _ => throw new NotImplementedException()
+            };
         }
     }
 }
