@@ -1,3 +1,4 @@
+using LogServer.Middleware;
 using LogServer.Report;
 using LogServer.Time;
 using Microsoft.AspNetCore.Builder;
