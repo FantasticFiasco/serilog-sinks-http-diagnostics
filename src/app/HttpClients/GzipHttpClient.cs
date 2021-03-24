@@ -20,7 +20,6 @@ namespace App.HttpClients
         {
         }
 
-        // TODO: Stream content instead of holding everything in memory
         public async Task<HttpResponseMessage> PostAsync(string requestUri, HttpContent content)
         {
             await using var input = new MemoryStream(await content.ReadAsByteArrayAsync());
@@ -31,12 +30,12 @@ namespace App.HttpClients
                 await input.CopyToAsync(gzipStream);
             }
 
-            await using var contentStream = new MemoryStream(output.ToArray());
-            var compressedContent = new StreamContent(contentStream);
-            compressedContent.Headers.Add("Content-Type", "application/json");
-            compressedContent.Headers.Add("Content-Encoding", "gzip");
+            await using var encodedStream = new MemoryStream(output.ToArray());
+            var encodedContent = new StreamContent(encodedStream);
+            encodedContent.Headers.Add("Content-Type", "application/json");
+            encodedContent.Headers.Add("Content-Encoding", "gzip");
 
-            var response = await _httpClient.PostAsync(requestUri, compressedContent);
+            var response = await _httpClient.PostAsync(requestUri, encodedContent);
             return response;
         }
 
