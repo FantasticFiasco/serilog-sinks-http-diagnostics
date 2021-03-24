@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using LogServer.Report;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace LogServer.Controllers
         {
             var contentType = Request.ContentType;
             var contentEncoding = Request.Headers["Content-Encoding"].FirstOrDefault() ?? "";
-            var contentLength = (int)Request.ContentLength;
+            var contentLength = (int?)Request.ContentLength ?? throw new Exception("No content length on request");
 
             var batchSize = ByteSize.From(logEventBatch);
 
