@@ -7,10 +7,11 @@ namespace LogServer.Middleware
 {
     public class GzipRequestMiddleware
     {
-        private readonly RequestDelegate _next;
         private const string ContentEncoding = "Content-Encoding";
         private const string Gzip = "gzip";
 
+        private readonly RequestDelegate _next;
+        
         public GzipRequestMiddleware(RequestDelegate next)
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
