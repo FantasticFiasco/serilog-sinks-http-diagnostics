@@ -1,3 +1,4 @@
+using LogServer.InputFormatters;
 using LogServer.Middleware;
 using LogServer.Report;
 using LogServer.Time;

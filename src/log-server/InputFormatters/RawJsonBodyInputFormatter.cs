@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Formatters;
 
-namespace LogServer
+namespace LogServer.InputFormatters
 {
     public class RawJsonBodyInputFormatter : InputFormatter
     {
@@ -14,8 +14,7 @@ namespace LogServer
 
         public override async Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context)
         {
-            var request = context.HttpContext.Request;
-            using var reader = new StreamReader(request.Body);
+            using var reader = new StreamReader(context.HttpContext.Request.Body);
             var content = await reader.ReadToEndAsync();
             return await InputFormatterResult.SuccessAsync(content);
         }
