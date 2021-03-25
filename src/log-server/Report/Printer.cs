@@ -64,7 +64,7 @@ namespace LogServer.Report
                 ByteSize.FriendlyValue(_statistics.BatchSize.Average),
                 ByteSize.FriendlyValue(_statistics.BatchSize.Max));
 
-            if (_statistics.ContentEncoding != null)
+            if (!string.IsNullOrEmpty(_statistics.ContentEncoding))
             {
                 messageBuilder.AppendTabbedFormatted("size compressed (min/avg/max)      {0} / {1} / {2}",
                     ByteSize.FriendlyValue(_statistics.ContentLength.Min),
