@@ -1,6 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>FantasticFiasco/renovate-config"
-  ]
+  "extends": ["github>FantasticFiasco/renovate-config"]
 }
