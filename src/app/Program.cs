@@ -2,13 +2,12 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using App.HttpClients;
 using App.Report;
 using CommandLine;
 using Serilog;
 using Serilog.Sinks.Http;
 using Serilog.Sinks.Http.BatchFormatters;
-using Serilog.Sinks.Http.Private.Http;
+using Serilog.Sinks.Http.HttpClients;
 
 namespace App
 {
@@ -160,8 +159,8 @@ namespace App
         {
             return compression switch
             {
-                Compression.None => new DefaultHttpClient(),
-                Compression.Gzip => new GzipHttpClient(),
+                Compression.None => new JsonHttpClient(),
+                Compression.Gzip => new JsonGzipHttpClient(),
                 _ => throw new NotImplementedException()
             };
         }
