@@ -37,6 +37,7 @@ namespace App
                 .WriteTo.Sink(_statistics)
                 .WriteTo.Http(
                     requestUri: options.Destination,
+                    queueLimitBytes: null,
                     batchFormatter: new ArrayBatchFormatter(),
                     httpClient: ResolveHttpClient(options.Compression))
                 .CreateLogger();
