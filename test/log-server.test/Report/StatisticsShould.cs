@@ -54,12 +54,12 @@ namespace LogServer.Report
 
         [Theory]
         [InlineData(0, null, null)]
-        [InlineData(1, 0.1, 10)]
-        [InlineData(2, 0.1, 20)]
-        [InlineData(10, 0.5, 20)]
-        [InlineData(1, 1, 1)]
-        [InlineData(1, 2, 0.5)]
-        [InlineData(10, 2, 5)]
+        [InlineData(1, 0.1, 10.0)]
+        [InlineData(2, 0.1, 20.0)]
+        [InlineData(10, 0.5, 20.0)]
+        [InlineData(1, 1.0, 1.0)]
+        [InlineData(1, 2.0, 0.5)]
+        [InlineData(10, 2.0, 5.0)]
         public void ReturnBatchesPerSecond(int batchCount, double? seconds, double? want)
         {
             // Arrange
@@ -85,9 +85,9 @@ namespace LogServer.Report
 
         [Theory]
         [InlineData(0, null, null)]
-        [InlineData(1, 0.1, 10)]
-        [InlineData(2, 0.1, 20)]
-        [InlineData(10, 0.5, 20)]
+        [InlineData(1, 0.1, 10.0)]
+        [InlineData(2, 0.1, 20.0)]
+        [InlineData(10, 0.5, 20.0)]
         [InlineData(1, 1.0, 1.0)]
         [InlineData(1, 2.0, 0.5)]
         [InlineData(10, 2.0, 5.0)]
