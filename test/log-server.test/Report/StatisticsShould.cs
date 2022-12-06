@@ -88,9 +88,9 @@ namespace LogServer.Report
         [InlineData(1, 0.1, 10)]
         [InlineData(2, 0.1, 20)]
         [InlineData(10, 0.5, 20)]
-        [InlineData(1, 1, 1)]
-        [InlineData(1, 2, 0.5)]
-        [InlineData(10, 2, 5)]
+        [InlineData(1, 1.0, 1.0)]
+        [InlineData(1, 2.0, 0.5)]
+        [InlineData(10, 2.0, 5.0)]
         public void ReturnLogEventsPerSecond(int logEvents, double? seconds, double? want)
         {
             // Arrange
