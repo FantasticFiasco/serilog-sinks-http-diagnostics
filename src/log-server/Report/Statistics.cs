@@ -62,7 +62,7 @@ namespace LogServer.Report
             }
         }
         public void ReportReceivedBatch(
-            string contentType,
+            string? contentType,
             string contentEncoding,
             int contentLength,
             int batchSize,
