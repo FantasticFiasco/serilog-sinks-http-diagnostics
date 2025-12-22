@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>LogServer</RootNamespace>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-     <ProjectReference Include="..\..\src\log-server\log-server.csproj" />
+    <ProjectReference Include="..\..\src\log-server\log-server.csproj" />
   </ItemGroup>
 
 </Project>
